@@ -116,15 +116,12 @@ class OpNode(Node):
     def __repr__(self):
         return "%s (%s)" % (self.op, self.nbargs)
     
-class AssignNode(Node):
-    type = '='
+class XMLNode(Node):
+    type = 'XML'
     
-class PrintNode(Node):
-    type = 'print'
-    
-class WhileNode(Node):
-    type = 'while'
-    
+class JNXNode(Node):
+    type = 'JNX'
+        
 class EntryNode(Node):
     type = 'ENTRY'
     def __init__(self):

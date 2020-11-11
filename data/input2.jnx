@@ -6,7 +6,7 @@
     <jnx:value>12</jnx:value>
 </jnx:var>
 
- <!-- un premier marin -->
+<!-- un premier marin -->
 <marin id="12">
     <nom>Surcouf</nom>
     <prenom>Robert</prenom>

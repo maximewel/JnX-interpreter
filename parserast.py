@@ -19,53 +19,22 @@ precedence = (
     ('right', 'UMINUS'),
 )
 
-def p_program(p) :
-    '''program : statement '''
-    p[0] = ast.ProgramNode(p[1])
 
-def p_programMultiple(p) :
-    '''program : statement ";" program'''
-    p[0] = ast.ProgramNode([p[1]] + p[3].children)
+def p_document(p):
+    '''document : LINE document'''
 
-def p_statement(p):
-    '''statement : assignement
-    | structure
-    | print
+def p_line(p):
+    '''line : XML_line
+    | JNX_line 
     '''
-    p[0] = p[1]
 
-def p_print(p):
-    ''' print : PRINT expression '''
-    p[0] = ast.PrintNode(p[2])
+def p_XML_line(p):
+    """XML_line : XML"""
+    p[0] = ast.XMLNode(p[1])
 
-def p_structure(p):
-    ''' structure : WHILE expression "{" program "}" '''
-    p[0] = ast.WhileNode([p[2], p[4]])
-
-def p_assignement(p):
-    ''' assignement : IDENTIFIER "=" expression '''
-    p[0] = ast.AssignNode([ast.TokenNode(p[1]), p[3]])
-
-def p_expression(p) :
-    '''expression : NUMBER
-    | IDENTIFIER'''
-    p[0] = ast.TokenNode(p[1])
-
-def p_expression_num(p) :
-    ''' expression : '(' expression ')' '''
-    p[0] = p[2]
-
-def p_expression_op(p) :
-    '''expression : expression ADD_OP expression 
-    | expression MUL_OP expression'''
-    p[0] = ast.OpNode(p[2], [p[1], p[3]])
-
-def p_expression_uminus(p):
-    '''expression : ADD_OP expression %prec UMINUS'''
-    #p[0] = ast.OpNode(p[1], [0, p[2]])                     #faux : insert 0
-    #p[0] = ast.OpNode(p[1], [ast.TokenNode(0), p[2]])      #correct binaire : insert tokenNode(0)
-    p[0] = ast.OpNode(p[1], [p[2]])                         #correct unaire : insert tokenNode(0)
-
+def p_JNX_line(p):
+    """JNX_line : JNX"""
+    p[0] = ast.JNXNode(p[1])
 
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))

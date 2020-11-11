@@ -3,18 +3,17 @@ import sys
 import os
 
 tokens = ( 
-    'NUMBER', 
-    'ADD_OP',
-    'MUL_OP',
-    'IDENTIFIER',
+    'XML',
+    'JNX',
 )
 
+"""
 #simple regexes
 t_ADD_OP = r'[\+-]'
-t_MUL_OP = r'[\*/]'
+t_MUL_OP = r'[\*/]'"""
 
 #reserved words
-literals = r'[\(\);={}]'
+literals = r'[<>:]'
 reserved_words = (
     "while",
     "print"
@@ -22,9 +21,12 @@ reserved_words = (
 tokens += tuple([reserved.upper() for reserved in reserved_words]) #add reserved words to the list of tokens, upper case
 
 #a bit more complex
-def t_NUMBER(t) :
+def t_XML(t) :
     r'\d+(\.\d+)?'
-    t.value = float(t.value)
+    return t
+
+def t_JNX(t) :
+    r'\d+(\.\d+)?'
     return t
 
 #The identifier is not inline anymore : A bit more complex, needs to be factorised in a function
