@@ -131,4 +131,4 @@ dmypy.json
 # data folder : only keep txt files
 /data/*
 !/data/*.txt
-!/data/*.xml
+!/data/*.jnx
