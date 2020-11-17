@@ -2,9 +2,8 @@ import ply.lex as lex
 import sys
 import os
 
-tokens = ( 
-    'XML',
-    'JNX',
+tokens = (
+    'IDENTIFIER',
 )
 
 """
@@ -13,21 +12,11 @@ t_ADD_OP = r'[\+-]'
 t_MUL_OP = r'[\*/]'"""
 
 #reserved words
-literals = r'[<>:]'
+literals = r'[</>:=]'
 reserved_words = (
-    "while",
-    "print"
+    "jnx"
 )
 tokens += tuple([reserved.upper() for reserved in reserved_words]) #add reserved words to the list of tokens, upper case
-
-#a bit more complex
-def t_XML(t) :
-    r'\d+(\.\d+)?'
-    return t
-
-def t_JNX(t) :
-    r'\d+(\.\d+)?'
-    return t
 
 #The identifier is not inline anymore : A bit more complex, needs to be factorised in a function
 def t_IDENTIFIER(t):

@@ -92,9 +92,9 @@ class Node:
                 graph.add_edge(edge)
             return graph    
         
-class ProgramNode(Node):
-    type = 'Program'
-        
+class DocumentNode(Node):
+    type = 'Document'
+
 class TokenNode(Node):
     type = 'token'
     def __init__(self, tok):
@@ -104,23 +104,17 @@ class TokenNode(Node):
     def __repr__(self):
         return repr(self.tok)
     
-class OpNode(Node):
-    def __init__(self, op, children):
-        Node.__init__(self,children)
-        self.op = op
-        try:
-            self.nbargs = len(children)
-        except AttributeError:
-            self.nbargs = 1
-        
-    def __repr__(self):
-        return "%s (%s)" % (self.op, self.nbargs)
+class BaliseStartNode(Node):
+    type = 'start'
     
-class XMLNode(Node):
-    type = 'XML'
-    
-class JNXNode(Node):
-    type = 'JNX'
+class BaliseEndNode(Node):
+    type = 'end'
+
+class ContentNode(Node):
+    type= 'content'
+
+class LineNode(Node):
+    type='line'
         
 class EntryNode(Node):
     type = 'ENTRY'

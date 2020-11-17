@@ -6,7 +6,7 @@ import os
 from lex import tokens
 import ast
 
-operations = {
+"""operations = {
     "+"   : lambda x,y: x+y,
     "-"   : lambda x,y: x-y,
     "*"   : lambda x,y: x*y,
@@ -17,24 +17,34 @@ precedence = (
     ("left", "ADD_OP"),
     ("left", "MUL_OP"),
     ('right', 'UMINUS'),
-)
+)"""
 
 
 def p_document(p):
-    '''document : LINE document'''
+    ''' document : line 
+    | line document '''
+    p[0] = ast.DocumentNode(p[1])
 
 def p_line(p):
-    '''line : XML_line
-    | JNX_line 
-    '''
+    ''' line : balise_start content balise_end '''
+    p[0] = ast.LineNode([p[1], p[2], p[3]])
 
-def p_XML_line(p):
-    """XML_line : XML"""
-    p[0] = ast.XMLNode(p[1])
+def p_autoBalise(p):
+    ''' balise_start : "<" content "/" ">" '''
+    p[0] = ast.BaliseStartNode(p[2])
 
-def p_JNX_line(p):
-    """JNX_line : JNX"""
-    p[0] = ast.JNXNode(p[1])
+def p_balise_start(p):
+    ''' balise_start : "<" content ">" '''
+    p[0] = ast.BaliseStartNode(p[2])
+
+def p_balise_end(p):
+    ''' balise_end : "<" "/" content  ">" '''
+    p[0] = ast.BaliseEndNode(p[3])
+
+def p_content(p):
+    ''' content : IDENTIFIER
+    | line'''
+    p[0] = ast.ContentNode(p[1])
 
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))

@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftADD_OPleftMUL_OPrightUMINUSADD_OP IDENTIFIER MUL_OP NUMBER PRINT WHILEprogram : statement program : statement ";" programstatement : assignement\n    | structure\n    | print\n     print : PRINT expression  structure : WHILE expression "{" program "}"  assignement : IDENTIFIER "=" expression expression : NUMBER\n    | IDENTIFIER expression : \'(\' expression \')\' expression : expression ADD_OP expression \n    | expression MUL_OP expressionexpression : ADD_OP expression %prec UMINUS'
+_lr_signature = 'IDENTIFIER J N X document : line \n    | line document  line : balise_start content balise_end  balise_start : "<" content "/" ">"  balise_start : "<" content ">"  balise_end : "<" "/" content  ">"  content : IDENTIFIER\n    | line'
     
-_lr_action_items = {'IDENTIFIER':([0,7,8,9,10,14,15,19,20,21,],[6,13,13,6,13,13,13,6,13,13,]),'WHILE':([0,9,19,],[7,7,7,]),'PRINT':([0,9,19,],[8,8,8,]),'$end':([1,2,3,4,5,12,13,16,17,18,23,25,26,27,28,],[0,-1,-3,-4,-5,-9,-10,-6,-2,-8,-14,-12,-13,-11,-7,]),'}':([2,3,4,5,12,13,16,17,18,23,24,25,26,27,28,],[-1,-3,-4,-5,-9,-10,-6,-2,-8,-14,28,-12,-13,-11,-7,]),';':([2,3,4,5,12,13,16,18,23,25,26,27,28,],[9,-3,-4,-5,-9,-10,-6,-8,-14,-12,-13,-11,-7,]),'=':([6,],[10,]),'NUMBER':([7,8,10,14,15,20,21,],[12,12,12,12,12,12,12,]),'(':([7,8,10,14,15,20,21,],[14,14,14,14,14,14,14,]),'ADD_OP':([7,8,10,11,12,13,14,15,16,18,20,21,22,23,25,26,27,],[15,15,15,20,-9,-10,15,15,20,20,15,15,20,-14,-12,-13,-11,]),'{':([11,12,13,23,25,26,27,],[19,-9,-10,-14,-12,-13,-11,]),'MUL_OP':([11,12,13,16,18,22,23,25,26,27,],[21,-9,-10,21,21,21,-14,21,-13,-11,]),')':([12,13,22,23,25,26,27,],[-9,-10,27,-14,-12,-13,-11,]),}
+_lr_action_items = {'<':([0,2,3,4,6,7,8,10,13,14,15,17,],[4,4,4,4,11,-7,-8,-3,-5,4,-4,-6,]),'$end':([1,2,5,10,17,],[0,-1,-2,-3,-6,]),'IDENTIFIER':([3,4,13,14,15,],[7,7,-5,7,-4,]),'/':([7,8,9,10,11,17,],[-7,-8,12,-3,14,-6,]),'>':([7,8,9,10,12,16,17,],[-7,-8,13,-3,15,17,-6,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'program':([0,9,19,],[1,17,24,]),'statement':([0,9,19,],[2,2,2,]),'assignement':([0,9,19,],[3,3,3,]),'structure':([0,9,19,],[4,4,4,]),'print':([0,9,19,],[5,5,5,]),'expression':([7,8,10,14,15,20,21,],[11,16,18,22,23,25,26,]),}
+_lr_goto_items = {'document':([0,2,],[1,5,]),'line':([0,2,3,4,14,],[2,2,8,8,8,]),'balise_start':([0,2,3,4,14,],[3,3,3,3,3,]),'content':([3,4,14,],[6,9,16,]),'balise_end':([6,],[10,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,19 +26,13 @@ for _k, _v in _lr_goto_items.items():
        _lr_goto[_x][_k] = _y
 del _lr_goto_items
 _lr_productions = [
-  ("S' -> program","S'",1,None,None,None),
-  ('program -> statement','program',1,'p_program','parserast.py',23),
-  ('program -> statement ; program','program',3,'p_programMultiple','parserast.py',27),
-  ('statement -> assignement','statement',1,'p_statement','parserast.py',31),
-  ('statement -> structure','statement',1,'p_statement','parserast.py',32),
-  ('statement -> print','statement',1,'p_statement','parserast.py',33),
-  ('print -> PRINT expression','print',2,'p_print','parserast.py',38),
-  ('structure -> WHILE expression { program }','structure',5,'p_structure','parserast.py',42),
-  ('assignement -> IDENTIFIER = expression','assignement',3,'p_assignement','parserast.py',46),
-  ('expression -> NUMBER','expression',1,'p_expression','parserast.py',50),
-  ('expression -> IDENTIFIER','expression',1,'p_expression','parserast.py',51),
-  ('expression -> ( expression )','expression',3,'p_expression_num','parserast.py',55),
-  ('expression -> expression ADD_OP expression','expression',3,'p_expression_op','parserast.py',59),
-  ('expression -> expression MUL_OP expression','expression',3,'p_expression_op','parserast.py',60),
-  ('expression -> ADD_OP expression','expression',2,'p_expression_uminus','parserast.py',64),
+  ("S' -> document","S'",1,None,None,None),
+  ('document -> line','document',1,'p_document','parserast.py',24),
+  ('document -> line document','document',2,'p_document','parserast.py',25),
+  ('line -> balise_start content balise_end','line',3,'p_line','parserast.py',29),
+  ('balise_start -> < content / >','balise_start',4,'p_autoBalise','parserast.py',33),
+  ('balise_start -> < content >','balise_start',3,'p_balise_start','parserast.py',37),
+  ('balise_end -> < / content >','balise_end',4,'p_balise_end','parserast.py',41),
+  ('content -> IDENTIFIER','content',1,'p_content','parserast.py',45),
+  ('content -> line','content',1,'p_content','parserast.py',46),
 ]
