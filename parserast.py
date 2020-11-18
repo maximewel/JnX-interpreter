@@ -65,14 +65,17 @@ def p_error(p) :
 parser = yacc.yacc(outputdir = "generated")
 
 if __name__ == "__main__":
+    #build the graph
     filename = os.getcwd() + "\\" + sys.argv[1]
     with open(filename) as prog :
         result = yacc.parse(prog.read())
         print(result)
+    #write graph to file-ast.pdf in output directory
     graph = result.makegraphicaltree()
-    name = os.path.splitext(sys.argv[1])[0] + "-ast.pdf"
-    graph.write_pdf(name)
-    print("file generated : {}".format(name))
+    fileWithoutPath = sys.argv[1].split('\\')[-1]
+    fileWithoutExtension = os.path.splitext(fileWithoutPath)[0]
+    filenameOutput = os.getcwd() + "\\output\\graphes\\" + fileWithoutExtension + "-ast.pdf"
+    graph.write_pdf(filenameOutput)
 
 def parse(program):
     result = yacc.parse(program)

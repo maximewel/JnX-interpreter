@@ -128,7 +128,8 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# data folder : only keep txt files
-/data/*
-!/data/*.txt
-!/data/*.jnx
+# Ignore output directory
+/output/graphes/*
+!/output/graphes/README.md
+/output/XML/*
+!/output/XML/README.md
