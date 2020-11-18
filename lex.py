@@ -4,15 +4,11 @@ import os
 
 tokens = (
     'IDENTIFIER',
+    'ATTRIB_VAL',
 )
 
-"""
-#simple regexes
-t_ADD_OP = r'[\+-]'
-t_MUL_OP = r'[\*/]'"""
-
 #reserved words
-literals = r'[</>:=]'
+literals = r'[</>:="]'
 reserved_words = (
     "jnx"
 )
@@ -23,6 +19,11 @@ def t_IDENTIFIER(t):
     r"[A-Za-z_]\w*"
     if t.value in reserved_words:
         t.type = t.value.upper()
+    return t
+
+def t_ATTRIB_VAL(t):
+    r"\".*?\""
+    #.*? for "non greedy", fetch the smallest "..." string
     return t
 
 #keep trace of the line

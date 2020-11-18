@@ -51,8 +51,13 @@ def p_balise_end(p):
     p[0] = ast.BaliseEndNode(p[3])
 
 def p_content(p):
-    ''' content : token'''
+    ''' content : token
+    | token content'''
     p[0] = p[1]
+
+def p_attribute(p):
+    ''' assignement : IDENTIFIER "=" ATTRIB_VAL '''
+    p[0] = ast.AssignNode([ast.TokenNode(p[1]), p[3]])
 
 def p_token(p):
     ''' token : IDENTIFIER '''
