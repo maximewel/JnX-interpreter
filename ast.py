@@ -110,11 +110,11 @@ class BaliseStartNode(Node):
 class BaliseEndNode(Node):
     type = 'end'
 
-class ContentNode(Node):
-    type= 'content'
-
 class LineNode(Node):
     type='line'
+
+class BlocNode(Node):
+    type='bloc'
         
 class EntryNode(Node):
     type = 'ENTRY'

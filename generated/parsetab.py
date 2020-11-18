@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'IDENTIFIER J N X document : line \n    | line document  line : balise_start content balise_end  balise_start : "<" content "/" ">"  balise_start : "<" content ">"  balise_end : "<" "/" content  ">"  content : IDENTIFIER\n    | line'
+_lr_signature = 'leftTRANSFORM_NODEIDENTIFIER J N X document : bloc  bloc : line %prec TRANSFORM_NODE  bloc : bloc line  line : balise_start content balise_end\n    | balise_start bloc balise_end  balise_start : "<" content ">"  balise_end : "<" "/" content  ">"  content : token token : IDENTIFIER '
     
-_lr_action_items = {'<':([0,2,3,4,6,7,8,10,13,14,15,17,],[4,4,4,4,11,-7,-8,-3,-5,4,-4,-6,]),'$end':([1,2,5,10,17,],[0,-1,-2,-3,-6,]),'IDENTIFIER':([3,4,13,14,15,],[7,7,-5,7,-4,]),'/':([7,8,9,10,11,17,],[-7,-8,12,-3,14,-6,]),'>':([7,8,9,10,12,16,17,],[-7,-8,13,-3,15,17,-6,]),}
+_lr_action_items = {'<':([0,2,3,4,6,7,8,9,10,12,14,16,19,],[5,5,-2,5,-3,13,15,-8,-9,-4,-5,-6,-7,]),'$end':([1,2,3,6,12,14,19,],[0,-1,-2,-3,-4,-5,-7,]),'IDENTIFIER':([4,5,15,16,17,],[10,10,10,-6,10,]),'>':([9,10,11,18,],[-8,-9,16,19,]),'/':([13,15,],[17,17,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'document':([0,2,],[1,5,]),'line':([0,2,3,4,14,],[2,2,8,8,8,]),'balise_start':([0,2,3,4,14,],[3,3,3,3,3,]),'content':([3,4,14,],[6,9,16,]),'balise_end':([6,],[10,]),}
+_lr_goto_items = {'document':([0,],[1,]),'bloc':([0,4,],[2,8,]),'line':([0,2,4,8,],[3,6,3,6,]),'balise_start':([0,2,4,8,],[4,4,4,4,]),'content':([4,5,15,17,],[7,11,11,18,]),'token':([4,5,15,17,],[9,9,9,9,]),'balise_end':([7,8,],[12,14,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,12 +27,13 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> document","S'",1,None,None,None),
-  ('document -> line','document',1,'p_document','parserast.py',24),
-  ('document -> line document','document',2,'p_document','parserast.py',25),
-  ('line -> balise_start content balise_end','line',3,'p_line','parserast.py',29),
-  ('balise_start -> < content / >','balise_start',4,'p_autoBalise','parserast.py',33),
-  ('balise_start -> < content >','balise_start',3,'p_balise_start','parserast.py',37),
-  ('balise_end -> < / content >','balise_end',4,'p_balise_end','parserast.py',41),
-  ('content -> IDENTIFIER','content',1,'p_content','parserast.py',45),
-  ('content -> line','content',1,'p_content','parserast.py',46),
+  ('document -> bloc','document',1,'p_document','parserast.py',21),
+  ('bloc -> line','bloc',1,'p_bloc','parserast.py',25),
+  ('bloc -> bloc line','bloc',2,'p_bloc_multiple','parserast.py',29),
+  ('line -> balise_start content balise_end','line',3,'p_line','parserast.py',33),
+  ('line -> balise_start bloc balise_end','line',3,'p_line','parserast.py',34),
+  ('balise_start -> < content >','balise_start',3,'p_balise_start','parserast.py',44),
+  ('balise_end -> < / content >','balise_end',4,'p_balise_end','parserast.py',48),
+  ('content -> token','content',1,'p_content','parserast.py',52),
+  ('token -> IDENTIFIER','token',1,'p_token','parserast.py',56),
 ]

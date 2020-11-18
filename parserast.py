@@ -12,26 +12,33 @@ import ast
     "*"   : lambda x,y: x*y,
     "/"   : lambda x,y: x/y,
 }
-
+"""
 precedence = (
-    ("left", "ADD_OP"),
-    ("left", "MUL_OP"),
-    ('right', 'UMINUS'),
-)"""
-
+    ('left', 'TRANSFORM_NODE'),
+)
 
 def p_document(p):
-    ''' document : line 
-    | line document '''
-    p[0] = ast.DocumentNode(p[1])
+    ''' document : bloc '''
+    p[0] = p[1]
+
+def p_bloc(p):
+    ''' bloc : line %prec TRANSFORM_NODE '''
+    p[0] = ast.BlocNode(p[1])
+
+def p_bloc_multiple(p):
+    ''' bloc : bloc line '''
+    p[0] = ast.BlocNode(p[1].children + [p[2]])
 
 def p_line(p):
-    ''' line : balise_start content balise_end '''
+    ''' line : balise_start content balise_end
+    | balise_start bloc balise_end '''
     p[0] = ast.LineNode([p[1], p[2], p[3]])
 
+"""
 def p_autoBalise(p):
     ''' balise_start : "<" content "/" ">" '''
     p[0] = ast.BaliseStartNode(p[2])
+    """
 
 def p_balise_start(p):
     ''' balise_start : "<" content ">" '''
@@ -42,9 +49,12 @@ def p_balise_end(p):
     p[0] = ast.BaliseEndNode(p[3])
 
 def p_content(p):
-    ''' content : IDENTIFIER
-    | line'''
-    p[0] = ast.ContentNode(p[1])
+    ''' content : token'''
+    p[0] = p[1]
+
+def p_token(p):
+    ''' token : IDENTIFIER '''
+    p[0] = ast.TokenNode(p[1])
 
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))

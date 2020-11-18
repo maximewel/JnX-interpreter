@@ -1,5 +1,6 @@
 # JnX-interpreter
-The JnX ! Interpreter is a Json-and-XML interpreter. Its purpose is to add some structure control to XML documents (for and foreach)
+The JnX ! Interpreter is a XML++ (maybe even XML# !) interpreter. Its purpose is to add some structure control to XML documents (for and foreach)\
+JnX means Jnx is the New XML
 
 ## JnX synthaxe
 JnX is a layer above XML. It's purpose is to facilitate XML writing by automatising template generation using predetermined data.\
