@@ -1,5 +1,5 @@
 <marin> 
-    <nom att="a"/>
+    <nom />
     <prenom> Robert </prenom>
     <object> Haha </object>
 </marin>

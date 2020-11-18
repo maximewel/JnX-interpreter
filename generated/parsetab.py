@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftTRANSFORM_NODEIDENTIFIER J N X document : bloc  bloc : line %prec TRANSFORM_NODE  bloc : bloc line  line : balise_start content balise_end\n    | balise_start bloc balise_end  balise_start : "<" content ">"  balise_end : "<" "/" content  ">"  content : token token : IDENTIFIER '
+_lr_signature = 'leftTRANSFORM_NODEIDENTIFIER J N X document : bloc  bloc : line %prec TRANSFORM_NODE  bloc : bloc line  line : balise_start content balise_end\n    | balise_start bloc balise_end \n    | balise_autoclose balise_autoclose : "<" token "/" ">"  balise_start : "<" content ">"  balise_end : "<" "/" content  ">"  content : token token : IDENTIFIER '
     
-_lr_action_items = {'<':([0,2,3,4,6,7,8,9,10,12,14,16,19,],[5,5,-2,5,-3,13,15,-8,-9,-4,-5,-6,-7,]),'$end':([1,2,3,6,12,14,19,],[0,-1,-2,-3,-4,-5,-7,]),'IDENTIFIER':([4,5,15,16,17,],[10,10,10,-6,10,]),'>':([9,10,11,18,],[-8,-9,16,19,]),'/':([13,15,],[17,17,]),}
+_lr_action_items = {'<':([0,2,3,4,5,7,8,9,10,11,14,16,18,21,23,],[6,6,-2,6,-6,-3,15,17,-10,-11,-4,-5,-8,-7,-9,]),'$end':([1,2,3,5,7,14,16,21,23,],[0,-1,-2,-6,-3,-4,-5,-7,-9,]),'IDENTIFIER':([4,6,17,18,20,],[11,11,11,-8,11,]),'>':([10,11,12,13,19,22,],[-10,-11,18,-10,21,23,]),'/':([11,13,15,17,],[-11,19,20,20,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'document':([0,],[1,]),'bloc':([0,4,],[2,8,]),'line':([0,2,4,8,],[3,6,3,6,]),'balise_start':([0,2,4,8,],[4,4,4,4,]),'content':([4,5,15,17,],[7,11,11,18,]),'token':([4,5,15,17,],[9,9,9,9,]),'balise_end':([7,8,],[12,14,]),}
+_lr_goto_items = {'document':([0,],[1,]),'bloc':([0,4,],[2,9,]),'line':([0,2,4,9,],[3,7,3,7,]),'balise_start':([0,2,4,9,],[4,4,4,4,]),'balise_autoclose':([0,2,4,9,],[5,5,5,5,]),'content':([4,6,17,20,],[8,12,12,22,]),'token':([4,6,17,20,],[10,13,13,10,]),'balise_end':([8,9,],[14,16,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -32,8 +32,10 @@ _lr_productions = [
   ('bloc -> bloc line','bloc',2,'p_bloc_multiple','parserast.py',29),
   ('line -> balise_start content balise_end','line',3,'p_line','parserast.py',33),
   ('line -> balise_start bloc balise_end','line',3,'p_line','parserast.py',34),
-  ('balise_start -> < content >','balise_start',3,'p_balise_start','parserast.py',44),
-  ('balise_end -> < / content >','balise_end',4,'p_balise_end','parserast.py',48),
-  ('content -> token','content',1,'p_content','parserast.py',52),
-  ('token -> IDENTIFIER','token',1,'p_token','parserast.py',56),
+  ('line -> balise_autoclose','line',1,'p_line','parserast.py',35),
+  ('balise_autoclose -> < token / >','balise_autoclose',4,'p_autoBalise','parserast.py',42),
+  ('balise_start -> < content >','balise_start',3,'p_balise_start','parserast.py',46),
+  ('balise_end -> < / content >','balise_end',4,'p_balise_end','parserast.py',50),
+  ('content -> token','content',1,'p_content','parserast.py',54),
+  ('token -> IDENTIFIER','token',1,'p_token','parserast.py',58),
 ]

@@ -14,17 +14,19 @@ Rule 2     bloc -> line
 Rule 3     bloc -> bloc line
 Rule 4     line -> balise_start content balise_end
 Rule 5     line -> balise_start bloc balise_end
-Rule 6     balise_start -> < content >
-Rule 7     balise_end -> < / content >
-Rule 8     content -> token
-Rule 9     token -> IDENTIFIER
+Rule 6     line -> balise_autoclose
+Rule 7     balise_autoclose -> < token / >
+Rule 8     balise_start -> < content >
+Rule 9     balise_end -> < / content >
+Rule 10    content -> token
+Rule 11    token -> IDENTIFIER
 
 Terminals, with rules where they appear
 
-/                    : 7
-<                    : 6 7
->                    : 6 7
-IDENTIFIER           : 9
+/                    : 7 9
+<                    : 7 8 9
+>                    : 7 8 9
+IDENTIFIER           : 11
 J                    : 
 N                    : 
 X                    : 
@@ -32,13 +34,14 @@ error                :
 
 Nonterminals, with rules where they appear
 
+balise_autoclose     : 6
 balise_end           : 4 5
 balise_start         : 4 5
 bloc                 : 1 3 5
-content              : 4 6 7
+content              : 4 8 9
 document             : 0
 line                 : 2 3
-token                : 8
+token                : 7 10
 
 Parsing method: LALR
 
@@ -50,14 +53,17 @@ state 0
     (3) bloc -> . bloc line
     (4) line -> . balise_start content balise_end
     (5) line -> . balise_start bloc balise_end
-    (6) balise_start -> . < content >
+    (6) line -> . balise_autoclose
+    (8) balise_start -> . < content >
+    (7) balise_autoclose -> . < token / >
 
-    <               shift and go to state 5
+    <               shift and go to state 6
 
     document                       shift and go to state 1
     bloc                           shift and go to state 2
     line                           shift and go to state 3
     balise_start                   shift and go to state 4
+    balise_autoclose               shift and go to state 5
 
 state 1
 
@@ -71,13 +77,16 @@ state 2
     (3) bloc -> bloc . line
     (4) line -> . balise_start content balise_end
     (5) line -> . balise_start bloc balise_end
-    (6) balise_start -> . < content >
+    (6) line -> . balise_autoclose
+    (8) balise_start -> . < content >
+    (7) balise_autoclose -> . < token / >
 
     $end            reduce using rule 1 (document -> bloc .)
-    <               shift and go to state 5
+    <               shift and go to state 6
 
-    line                           shift and go to state 6
+    line                           shift and go to state 7
     balise_start                   shift and go to state 4
+    balise_autoclose               shift and go to state 5
 
 state 3
 
@@ -91,35 +100,47 @@ state 4
 
     (4) line -> balise_start . content balise_end
     (5) line -> balise_start . bloc balise_end
-    (8) content -> . token
+    (10) content -> . token
     (2) bloc -> . line
     (3) bloc -> . bloc line
-    (9) token -> . IDENTIFIER
+    (11) token -> . IDENTIFIER
     (4) line -> . balise_start content balise_end
     (5) line -> . balise_start bloc balise_end
-    (6) balise_start -> . < content >
+    (6) line -> . balise_autoclose
+    (8) balise_start -> . < content >
+    (7) balise_autoclose -> . < token / >
 
-    IDENTIFIER      shift and go to state 10
-    <               shift and go to state 5
+    IDENTIFIER      shift and go to state 11
+    <               shift and go to state 6
 
     balise_start                   shift and go to state 4
-    content                        shift and go to state 7
-    bloc                           shift and go to state 8
-    token                          shift and go to state 9
+    content                        shift and go to state 8
+    bloc                           shift and go to state 9
+    token                          shift and go to state 10
     line                           shift and go to state 3
+    balise_autoclose               shift and go to state 5
 
 state 5
 
-    (6) balise_start -> < . content >
-    (8) content -> . token
-    (9) token -> . IDENTIFIER
+    (6) line -> balise_autoclose .
 
-    IDENTIFIER      shift and go to state 10
+    <               reduce using rule 6 (line -> balise_autoclose .)
+    $end            reduce using rule 6 (line -> balise_autoclose .)
 
-    content                        shift and go to state 11
-    token                          shift and go to state 9
 
 state 6
+
+    (8) balise_start -> < . content >
+    (7) balise_autoclose -> < . token / >
+    (10) content -> . token
+    (11) token -> . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 11
+
+    content                        shift and go to state 12
+    token                          shift and go to state 13
+
+state 7
 
     (3) bloc -> bloc line .
 
@@ -127,54 +148,67 @@ state 6
     $end            reduce using rule 3 (bloc -> bloc line .)
 
 
-state 7
-
-    (4) line -> balise_start content . balise_end
-    (7) balise_end -> . < / content >
-
-    <               shift and go to state 13
-
-    balise_end                     shift and go to state 12
-
 state 8
 
-    (5) line -> balise_start bloc . balise_end
-    (3) bloc -> bloc . line
-    (7) balise_end -> . < / content >
-    (4) line -> . balise_start content balise_end
-    (5) line -> . balise_start bloc balise_end
-    (6) balise_start -> . < content >
+    (4) line -> balise_start content . balise_end
+    (9) balise_end -> . < / content >
 
     <               shift and go to state 15
 
-    balise_start                   shift and go to state 4
     balise_end                     shift and go to state 14
-    line                           shift and go to state 6
 
 state 9
 
-    (8) content -> token .
+    (5) line -> balise_start bloc . balise_end
+    (3) bloc -> bloc . line
+    (9) balise_end -> . < / content >
+    (4) line -> . balise_start content balise_end
+    (5) line -> . balise_start bloc balise_end
+    (6) line -> . balise_autoclose
+    (8) balise_start -> . < content >
+    (7) balise_autoclose -> . < token / >
 
-    <               reduce using rule 8 (content -> token .)
-    >               reduce using rule 8 (content -> token .)
+    <               shift and go to state 17
 
+    balise_start                   shift and go to state 4
+    balise_end                     shift and go to state 16
+    line                           shift and go to state 7
+    balise_autoclose               shift and go to state 5
 
 state 10
 
-    (9) token -> IDENTIFIER .
+    (10) content -> token .
 
-    <               reduce using rule 9 (token -> IDENTIFIER .)
-    >               reduce using rule 9 (token -> IDENTIFIER .)
+    <               reduce using rule 10 (content -> token .)
+    >               reduce using rule 10 (content -> token .)
 
 
 state 11
 
-    (6) balise_start -> < content . >
+    (11) token -> IDENTIFIER .
 
-    >               shift and go to state 16
+    <               reduce using rule 11 (token -> IDENTIFIER .)
+    /               reduce using rule 11 (token -> IDENTIFIER .)
+    >               reduce using rule 11 (token -> IDENTIFIER .)
 
 
 state 12
+
+    (8) balise_start -> < content . >
+
+    >               shift and go to state 18
+
+
+state 13
+
+    (7) balise_autoclose -> < token . / >
+    (10) content -> token .
+
+    /               shift and go to state 19
+    >               reduce using rule 10 (content -> token .)
+
+
+state 14
 
     (4) line -> balise_start content balise_end .
 
@@ -182,14 +216,14 @@ state 12
     $end            reduce using rule 4 (line -> balise_start content balise_end .)
 
 
-state 13
+state 15
 
-    (7) balise_end -> < . / content >
+    (9) balise_end -> < . / content >
 
-    /               shift and go to state 17
+    /               shift and go to state 20
 
 
-state 14
+state 16
 
     (5) line -> balise_start bloc balise_end .
 
@@ -197,49 +231,65 @@ state 14
     $end            reduce using rule 5 (line -> balise_start bloc balise_end .)
 
 
-state 15
-
-    (7) balise_end -> < . / content >
-    (6) balise_start -> < . content >
-    (8) content -> . token
-    (9) token -> . IDENTIFIER
-
-    /               shift and go to state 17
-    IDENTIFIER      shift and go to state 10
-
-    content                        shift and go to state 11
-    token                          shift and go to state 9
-
-state 16
-
-    (6) balise_start -> < content > .
-
-    IDENTIFIER      reduce using rule 6 (balise_start -> < content > .)
-    <               reduce using rule 6 (balise_start -> < content > .)
-
-
 state 17
 
-    (7) balise_end -> < / . content >
-    (8) content -> . token
-    (9) token -> . IDENTIFIER
+    (9) balise_end -> < . / content >
+    (8) balise_start -> < . content >
+    (7) balise_autoclose -> < . token / >
+    (10) content -> . token
+    (11) token -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 10
+    /               shift and go to state 20
+    IDENTIFIER      shift and go to state 11
 
-    content                        shift and go to state 18
-    token                          shift and go to state 9
+    content                        shift and go to state 12
+    token                          shift and go to state 13
 
 state 18
 
-    (7) balise_end -> < / content . >
+    (8) balise_start -> < content > .
 
-    >               shift and go to state 19
+    IDENTIFIER      reduce using rule 8 (balise_start -> < content > .)
+    <               reduce using rule 8 (balise_start -> < content > .)
 
 
 state 19
 
-    (7) balise_end -> < / content > .
+    (7) balise_autoclose -> < token / . >
 
-    <               reduce using rule 7 (balise_end -> < / content > .)
-    $end            reduce using rule 7 (balise_end -> < / content > .)
+    >               shift and go to state 21
+
+
+state 20
+
+    (9) balise_end -> < / . content >
+    (10) content -> . token
+    (11) token -> . IDENTIFIER
+
+    IDENTIFIER      shift and go to state 11
+
+    content                        shift and go to state 22
+    token                          shift and go to state 10
+
+state 21
+
+    (7) balise_autoclose -> < token / > .
+
+    <               reduce using rule 7 (balise_autoclose -> < token / > .)
+    $end            reduce using rule 7 (balise_autoclose -> < token / > .)
+
+
+state 22
+
+    (9) balise_end -> < / content . >
+
+    >               shift and go to state 23
+
+
+state 23
+
+    (9) balise_end -> < / content > .
+
+    <               reduce using rule 9 (balise_end -> < / content > .)
+    $end            reduce using rule 9 (balise_end -> < / content > .)
 

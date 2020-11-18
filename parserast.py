@@ -31,14 +31,16 @@ def p_bloc_multiple(p):
 
 def p_line(p):
     ''' line : balise_start content balise_end
-    | balise_start bloc balise_end '''
-    p[0] = ast.LineNode([p[1], p[2], p[3]])
+    | balise_start bloc balise_end 
+    | balise_autoclose'''
+    try :
+        p[0] = ast.LineNode([p[1], p[2], p[3]])
+    except IndexError:
+        p[0] = p[1]
 
-"""
 def p_autoBalise(p):
-    ''' balise_start : "<" content "/" ">" '''
-    p[0] = ast.BaliseStartNode(p[2])
-    """
+    ''' balise_autoclose : "<" token "/" ">" '''
+    p[0] = ast.LineNode([p[2], ast.TokenNode("VIDE"), p[2]])
 
 def p_balise_start(p):
     ''' balise_start : "<" content ">" '''
