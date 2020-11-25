@@ -1,4 +1,3 @@
-<marin prenom="robert"> 
-    <nom name="Steeve"/>
-    <object name="obj"> Haha </object>
+<marin paramMarin="robert">
+    <object paramObj="obj">MyValue</object>
 </marin>

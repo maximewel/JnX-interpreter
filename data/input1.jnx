@@ -9,7 +9,7 @@
 <!-- un premier marin -->
 <marin id="12">
     <nom>Surcouf</nom>
-    <prenom>Robert</prenom>
+    <prenom>jnx:get</prenom>
     <remarque  lang="FR">Capitaine corsaire</remarque>
 
     <history-object>

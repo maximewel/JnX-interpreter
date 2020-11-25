@@ -1,0 +1,4 @@
+<marin ship="titanic"> 
+    <nom firstname="robert mueller" middleName="Hue"/>
+    <object price="10 11 12" discount="20%">Haha</object>
+</marin>

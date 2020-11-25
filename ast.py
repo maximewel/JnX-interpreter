@@ -103,6 +103,12 @@ class TokenNode(Node):
         
     def __repr__(self):
         return repr(self.tok)
+
+class InfoNode(Node):
+    type = 'Info'
+
+class AttributeNode(Node):
+    type = '='
     
 class BaliseStartNode(Node):
     type = 'start'
@@ -116,6 +122,9 @@ class LineNode(Node):
 class BlocNode(Node):
     type='bloc'
         
+class JnxNode(Node):
+    type='jnx'
+
 class EntryNode(Node):
     type = 'ENTRY'
     def __init__(self):

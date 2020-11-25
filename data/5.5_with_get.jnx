@@ -1,0 +1,4 @@
+<marin> 
+    <nom firstname="jnx:get" middleName="jnx:var"/>
+    <jnx:get price="10 11 12" discount="20%">this is an object</object>
+</marin>

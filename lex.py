@@ -4,26 +4,26 @@ import os
 
 tokens = (
     'IDENTIFIER',
+    'JNX_TAG',
     'ATTRIB_VAL',
 )
 
 #reserved words
-literals = r'[</>:="]'
+literals = r'[</>="]'
 reserved_words = (
-    "jnx"
+    #"jnx",
 )
 tokens += tuple([reserved.upper() for reserved in reserved_words]) #add reserved words to the list of tokens, upper case
 
-#The identifier is not inline anymore : A bit more complex, needs to be factorised in a function
-def t_IDENTIFIER(t):
-    r"[A-Za-z_]\w*"
-    if t.value in reserved_words:
-        t.type = t.value.upper()
+def t_JNX_TAG(t):
+    r"<jnx:\w*\b"
     return t
 
-def t_ATTRIB_VAL(t):
-    r"\".*?\""
-    #.*? for "non greedy", fetch the smallest "..." string
+#The identifier is not inline anymore : A bit more complex, needs to be factorised in a function
+def t_IDENTIFIER(t):
+    r"[A-Za-z_][\w]*"
+    if t.value in reserved_words:
+        t.type = t.value.upper()
     return t
 
 #keep trace of the line

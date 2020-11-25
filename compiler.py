@@ -4,7 +4,6 @@ from functools import reduce
 from parserast import parse
 import sys
 
-
 #init ops and vars
 ops = {
     '+' : lambda x,y : x+y,
