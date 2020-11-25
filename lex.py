@@ -26,6 +26,10 @@ def t_IDENTIFIER(t):
         t.type = t.value.upper()
     return t
 
+def t_ATTRIB_VAL(t):
+    r"\".*?\""
+    return t
+
 #keep trace of the line
 def t_newline(t) :
     r'\n+'
