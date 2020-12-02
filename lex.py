@@ -15,6 +15,9 @@ reserved_words = (
 )
 tokens += tuple([reserved.upper() for reserved in reserved_words]) #add reserved words to the list of tokens, upper case
 
+''' --- JNX attributes --- '''
+
+#JNX start/end tokens
 def t_JNX_TAG_START(t):
     r"<jnx:\w*(\b)?"
     return t
@@ -23,15 +26,16 @@ def t_JNX_TAG_END(t):
     r"/jnx:\w*>"
     return t
 
-#The identifier is not inline anymore : A bit more complex, needs to be factorised in a function
-def t_IDENTIFIER(t):
-    r"[A-Za-z_][\w]*"
-    if t.value in reserved_words:
-        t.type = t.value.upper()
-    return t
-
+#attributes values (" ... ")
 def t_ATTRIB_VAL(t):
     r"\".*?\""
+    return t
+
+''' --- From compiler course --- '''
+def t_IDENTIFIER(t):
+    r"[\w_-]+"
+    if t.value in reserved_words:
+        t.type = t.value.upper()
     return t
 
 #keep trace of the line

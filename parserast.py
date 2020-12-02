@@ -6,14 +6,6 @@ import os
 from lex import tokens
 import ast
 
-"""operations = {
-    "+"   : lambda x,y: x+y,
-    "-"   : lambda x,y: x-y,
-    "*"   : lambda x,y: x*y,
-    "/"   : lambda x,y: x/y,
-}
-"""
-
 jnxNodes = {
     'get' : ast.JnxGetNode(),
     'var' : ast.JnxVarNode(),
@@ -26,7 +18,7 @@ precedence = (
     ('left', 'TRANSFORM_NODE'),
 )
 
-# ---- BLOC_LINES ----
+# ---- BLOC AND LINES ----
 
 def p_document(p):
     ''' document : bloc '''
@@ -41,7 +33,7 @@ def p_bloc_multiple(p):
     p[0] = ast.BlocNode(p[1].children + [p[2]])
 
 def p_line(p):
-    ''' line : balise_start token balise_end
+    ''' line : balise_start token_sequence balise_end
     | balise_start bloc balise_end 
     | balise_autoclose'''
     try :
@@ -54,11 +46,10 @@ def p_line(p):
 def p_autoBalise(p):
     ''' balise_autoclose : tag "/" ">"
     | tag attributes "/" ">" '''
-    endB = ast.BaliseEndNode(p[2])
     if len(p) > 4:
-        p[0] = ast.LineNode([ast.BaliseStartNode([p[1], p[2]]), ast.TokenNode('VIDE'), endB])
+        p[0] = ast.LineNode([ast.BaliseStartNode([p[1], p[2]]), ast.TokenNode('VIDE'), ast.BaliseEndNode(p[1])])
     else:
-        p[0] = ast.LineNode([ast.BaliseStartNode(p[1]), ast.TokenNode('VIDE'), endB])
+        p[0] = ast.LineNode([ast.BaliseStartNode(p[1]), ast.TokenNode('VIDE'), ast.BaliseEndNode(p[1])])
 
 def p_balise_start(p):
     ''' balise_start : tag ">"
@@ -78,8 +69,7 @@ def p_tag_jinx(p):
     try:
         p[0] = jnxNodes[jinxWord]
     except KeyError :
-        #TODO : What's the best way to throw this synthaxic error ?
-        p_error(p[1])
+        error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
 def p_balise_end(p):
     ''' balise_end : "<" "/" token  ">" '''
@@ -91,10 +81,10 @@ def p_balise_end_jinx(p):
     try:
         p[0] =  ast.BaliseEndNode(jnxNodes[jinxWord])
     except KeyError :
-        #TODO : What's the best way to throw this synthaxic error ?
-        p_error(p[1])
+        error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
-# ---- ATTRIBUTES ----
+# ---- ATTRIBUTES ---- 
+
 def p_attributes_sequence(p):
     ''' attributes : attribute 
     | attributes attribute'''
@@ -107,13 +97,26 @@ def p_attribute(p):
     ''' attribute : token "=" ATTRIB_VAL '''
     p[0] = ast.AttributeNode([p[1], ast.TokenNode(p[3])])
 
-# ---- JNX gestion ----
+# ---- TOKENS AND STRINGS ---- 
 
 def p_token(p):
     ''' token : IDENTIFIER '''
     p[0] = ast.TokenNode(p[1])
 
-#Error special case
+def p_token_sequence(p):
+    ''' token_sequence : token
+    | token_sequence token '''
+    try:
+        p[0] = ast.TokenNode(p[1].tok + " " + p[2].tok)
+    except :
+        p[0] = p[1]
+
+# --- Error special case --- 
+
+def error_message(p, message):
+    print(f"Error message : {message}")
+    p_error(p)
+
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))
     parser.errok()
