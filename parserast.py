@@ -127,7 +127,7 @@ if __name__ == "__main__":
     #build the graph
     filename = os.getcwd() + "\\" + sys.argv[1]
     with open(filename) as prog :
-        result = yacc.parse(prog.read(), debug=True)
+        result = yacc.parse(prog.read())
         print(result)
     #write graph to file-ast.pdf in output directory
     graph = result.makegraphicaltree()
