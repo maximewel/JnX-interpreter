@@ -1,4 +1,9 @@
 <marin> 
     <nom firstname="jnx:get" middleName="jnx:var"/>
-    <jnx:get price="10 11 12" discount="20%">this is an object</object>
+    <jnx:get price="10 11 12" discount="20%">obj</jnx:get>
+    <jnx:foreach ranking="1 2 3">
+        <student>Julien</student>
+        <student>Gregoire</student>
+    </jnx:foreach>
+    <jnx:value>val</jnx:value>
 </marin>

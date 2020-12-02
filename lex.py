@@ -4,19 +4,23 @@ import os
 
 tokens = (
     'IDENTIFIER',
-    'JNX_TAG',
+    'JNX_TAG_START',
+    'JNX_TAG_END',
     'ATTRIB_VAL',
 )
 
 #reserved words
 literals = r'[</>="]'
 reserved_words = (
-    #"jnx",
 )
 tokens += tuple([reserved.upper() for reserved in reserved_words]) #add reserved words to the list of tokens, upper case
 
-def t_JNX_TAG(t):
-    r"<jnx:\w*\b"
+def t_JNX_TAG_START(t):
+    r"<jnx:\w*(\b)?"
+    return t
+
+def t_JNX_TAG_END(t):
+    r"/jnx:\w*>"
     return t
 
 #The identifier is not inline anymore : A bit more complex, needs to be factorised in a function

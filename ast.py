@@ -122,8 +122,20 @@ class LineNode(Node):
 class BlocNode(Node):
     type='bloc'
         
-class JnxNode(Node):
-    type='jnx'
+class JnxGetNode(Node):
+    type='get'
+
+class JnxVarNode(Node):
+    type='var'
+
+class JnxForeachNode(Node):
+    type='foreach'
+
+class JnxValueNode(Node):
+    type='value'
+
+class JnxForNode(Node):
+    type='for'
 
 class EntryNode(Node):
     type = 'ENTRY'

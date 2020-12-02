@@ -13,6 +13,15 @@ import ast
     "/"   : lambda x,y: x/y,
 }
 """
+
+jnxNodes = {
+    'get' : ast.JnxGetNode(),
+    'var' : ast.JnxVarNode(),
+    'foreach' : ast.JnxForeachNode(),
+    'value' : ast.JnxValueNode(),
+    'for' : ast.JnxForNode(),
+}
+
 precedence = (
     ('left', 'TRANSFORM_NODE'),
 )
@@ -60,16 +69,30 @@ def p_balise_start(p):
         p[0] = ast.BaliseStartNode(p[1])
 
 def p_tag(p):
-    ''' tag : JNX_TAG
-    | "<" token '''
+    ''' tag : "<" token '''
+    p[0] = p[2]
+
+def p_tag_jinx(p):
+    ''' tag : JNX_TAG_START '''
+    jinxWord = p[1].split(":")[-1]
     try:
-        p[0] = p[2]
-    except:
-        p[0] = ast.JnxNode(ast.TokenNode(p[1]))
+        p[0] = jnxNodes[jinxWord]
+    except KeyError :
+        #TODO : What's the best way to throw this synthaxic error ?
+        p_error(p[1])
 
 def p_balise_end(p):
     ''' balise_end : "<" "/" token  ">" '''
     p[0] = ast.BaliseEndNode(p[3])
+
+def p_balise_end_jinx(p):
+    ''' balise_end : "<" JNX_TAG_END '''
+    jinxWord = p[2].split(":")[-1].replace(">", "")
+    try:
+        p[0] =  ast.BaliseEndNode(jnxNodes[jinxWord])
+    except KeyError :
+        #TODO : What's the best way to throw this synthaxic error ?
+        p_error(p[1])
 
 # ---- ATTRIBUTES ----
 def p_attributes_sequence(p):
