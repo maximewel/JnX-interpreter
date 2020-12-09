@@ -6,15 +6,29 @@ import sys
 import os
 
 
-#init variables
+""" --- init variables --- """
+vars = {}
 
+""" --- Nodes gestion ---"""
 
-def whilecounter():
-    whilecounter.current += 1
-    return whilecounter.current
-whilecounter.current = 0
+"""         ---- XML-Structure-Nodes ----
+DocumentNode
+TokenNode
+LineNode
+BlocNode
+""" """     ---- LINES-Nodes ----
+InfoNode
+AttributeNode
+BaliseStartNode
+BaliseEndNode
+""" """     ---- JINX-NODES ----
+JnxGetNode
+JnxVarNode
+JnxForeachNode
+JnxValueNode
+JnxForNode
+"""
 
-#programme
 @addToClass(ast.ProgramNode)
 def compile(self):
     bytecode = ""
@@ -22,7 +36,6 @@ def compile(self):
         bytecode += c.compile()
     return bytecode
 
-#node variable
 @addToClass(ast.TokenNode)
 def compile(self):
     bytecode = ""
@@ -39,7 +52,6 @@ def compile(self):
     bytecode += "SET %s\n" % self.children[0].tok
     return bytecode
     
-#print
 @addToClass(ast.PrintNode)
 def compile(self):
     bytecode = ""
@@ -47,7 +59,6 @@ def compile(self):
     bytecode += "PRINT\n"
     return bytecode
     
-#operation
 @addToClass(ast.OpNode)
 def compile(self):
     bytecode = ""
@@ -60,10 +71,8 @@ def compile(self):
         bytecode += ops[self.op] + "\n"
     return bytecode
     
-#while
 @addToClass(ast.WhileNode)
 def compile(self):
-    counter = whilecounter()
     bytecode = ""
     bytecode += "JMP cond%s\n" % counter
     bytecode += "body%s: " % counter
@@ -77,8 +86,12 @@ if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
     ast = parse(prog)
     compiled = ast.compile()
-    name = os.path.splitext(sys.argv[1])[0]+'.vm'
+
+    fileWithoutPath = sys.argv[1].split('\\')[-1]
+    fileWithoutExtension = os.path.splitext(fileWithoutPath)[0]
+    filenameOutput = os.getcwd() + "\\output\\XML\\" + fileWithoutExtension + ".JnX"
     outfile = open(name,'w')
     outfile.write(compiled)
     outfile.close()
+
     print("Wrote output to",name)

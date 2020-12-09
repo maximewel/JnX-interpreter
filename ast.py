@@ -59,39 +59,6 @@ class Node:
                 #dot.set_graphviz_executables({'dot': r'C:\Program Files\Graphviz2.38\bin\dot.exe'})
             return dot
         
-    def threadTree(self, graph, seen = None, col=0):
-            colors = ('red', 'green', 'blue', 'yellow', 'magenta', 'cyan')
-            if not seen: seen = []
-            if self in seen: return
-            seen.append(self)
-            new = not graph.get_node(self.ID)
-            if new:
-                graphnode = pydot.Node(self.ID,label=repr(self), shape=self.shape)
-                graphnode.set_style('dotted')
-                graph.add_node(graphnode)
-            label = len(self.next)-1
-            for i,c in enumerate(self.next):
-                if not c: return
-                col = (col + 1) % len(colors)
-                col=0 # FRT pour tout afficher en rouge
-                color = colors[col]                
-                c.threadTree(graph, seen, col)
-                edge = pydot.Edge(self.ID,c.ID)
-                edge.set_color(color)
-                edge.set_arrowsize('.5')
-                # Les arr�tes correspondant aux coutures ne sont pas prises en compte
-                # pour le layout du graphe. Ceci permet de garder l'arbre dans sa repr�sentation
-                # "standard", mais peut provoquer des surprises pour le trajet parfois un peu
-                # tarabiscot� des coutures...
-                # En commantant cette ligne, le layout sera bien meilleur, mais l'arbre nettement
-                # moins reconnaissable.
-                edge.set_constraint('false') 
-                if label:
-                    edge.set_taillabel(str(i))
-                    edge.set_labelfontcolor(color)
-                graph.add_edge(edge)
-            return graph    
-        
 class DocumentNode(Node):
     type = 'Document'
 
@@ -137,10 +104,6 @@ class JnxValueNode(Node):
 class JnxForNode(Node):
     type='for'
 
-class EntryNode(Node):
-    type = 'ENTRY'
-    def __init__(self):
-        Node.__init__(self, None)
     
 def addToClass(cls):
     ''' D�corateur permettant d'ajouter la fonction d�cor�e en tant que m�thode
