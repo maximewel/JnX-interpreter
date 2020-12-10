@@ -31,21 +31,22 @@ JnxValueNode
 JnxForNode
 """
 
+def interpretChildren(node):
+    return reduce(lambda a,b: a+b, [c.interpret() for c in node.children])
+
 @addToClass(ast.DocumentNode)
 def interpret(self):
-    xmlDocument = ""
-    for c in self.children:
-        xmlDocument += c.interpret()
-    return xmlDocument
+    print("Analysing document...")
+    return interpretChildren(self)
 
 @addToClass(ast.LineNode)
 def interpret(self):
-    return self.children.interpret()
+    return interpretChildren(self)
 
 @addToClass(ast.BlocNode)
 def interpret(self):
-    xml = ""
-    return xml
+    return interpretChildren(self)
+
 
 if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
