@@ -21,8 +21,12 @@ precedence = (
 # ---- BLOC AND LINES ----
 
 def p_document(p):
-    ''' document : bloc '''
-    p[0] = p[1]
+    ''' document : jinx_header bloc 
+    | bloc'''
+    try:
+        p[0] = ast.BlocNode([p[1]] + p[2].children)
+    except:
+        p[0] = p[1]
 
 def p_bloc(p):
     ''' bloc : line %prec TRANSFORM_NODE '''
@@ -60,7 +64,6 @@ def p_balise_start(p):
     else :
         p[0] = ast.BaliseStartNode(p[1])
 
-
 # TAGS : XML, JNX, JNX-Header
 def p_tag(p):
     ''' tag : "<" token '''
@@ -74,10 +77,9 @@ def p_tag_jinx(p):
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
-def p_tag_jinx_header(p):
-    ''' tag : JNX_TAG_HEADER '''
-    p[0] = ast.JnxHeader()
-
+def p_jinx_header(p):
+    ''' jinx_header : JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END'''
+    p[0] = ast.JnxHeader(p[2].children)
 
 def p_balise_end(p):
     ''' balise_end : "<" "/" token  ">" '''

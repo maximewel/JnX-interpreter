@@ -3,92 +3,97 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> document
-Rule 1     document -> bloc
-Rule 2     bloc -> line
-Rule 3     bloc -> bloc line
-Rule 4     line -> balise_start token_sequence balise_end
-Rule 5     line -> balise_start bloc balise_end
-Rule 6     line -> balise_autoclose
-Rule 7     line -> comment
-Rule 8     balise_autoclose -> tag / >
-Rule 9     balise_autoclose -> tag attributes / >
-Rule 10    balise_start -> tag >
-Rule 11    balise_start -> tag attributes >
-Rule 12    tag -> < token
-Rule 13    tag -> JNX_TAG_START
-Rule 14    tag -> JNX_TAG_HEADER
-Rule 15    balise_end -> < / token >
-Rule 16    balise_end -> < JNX_TAG_END
-Rule 17    comment -> COMMENT
-Rule 18    attributes -> attribute
-Rule 19    attributes -> attributes attribute
-Rule 20    attribute -> token = ATTRIB_VAL
-Rule 21    token -> IDENTIFIER
-Rule 22    token_sequence -> token
-Rule 23    token_sequence -> token_sequence token
+Rule 1     document -> jinx_header bloc
+Rule 2     document -> bloc
+Rule 3     bloc -> line
+Rule 4     bloc -> bloc line
+Rule 5     line -> balise_start token_sequence balise_end
+Rule 6     line -> balise_start bloc balise_end
+Rule 7     line -> balise_autoclose
+Rule 8     line -> comment
+Rule 9     balise_autoclose -> tag / >
+Rule 10    balise_autoclose -> tag attributes / >
+Rule 11    balise_start -> tag >
+Rule 12    balise_start -> tag attributes >
+Rule 13    tag -> < token
+Rule 14    tag -> JNX_TAG_START
+Rule 15    jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END
+Rule 16    balise_end -> < / token >
+Rule 17    balise_end -> < JNX_TAG_END
+Rule 18    comment -> COMMENT
+Rule 19    attributes -> attribute
+Rule 20    attributes -> attributes attribute
+Rule 21    attribute -> token = ATTRIB_VAL
+Rule 22    token -> IDENTIFIER
+Rule 23    token_sequence -> token
+Rule 24    token_sequence -> token_sequence token
 
 Terminals, with rules where they appear
 
-/                    : 8 9 15
-<                    : 12 15 16
-=                    : 20
->                    : 8 9 10 11 15
-ATTRIB_VAL           : 20
-COMMENT              : 17
-IDENTIFIER           : 21
-JNX_TAG_END          : 16
-JNX_TAG_HEADER       : 14
-JNX_TAG_START        : 13
+/                    : 9 10 16
+<                    : 13 16 17
+=                    : 21
+>                    : 9 10 11 12 16
+ATTRIB_VAL           : 21
+COMMENT              : 18
+IDENTIFIER           : 22
+JNX_TAG_END          : 17
+JNX_TAG_HEADER_END   : 15
+JNX_TAG_HEADER_START : 15
+JNX_TAG_START        : 14
 error                : 
 
 Nonterminals, with rules where they appear
 
-attribute            : 18 19
-attributes           : 9 11 19
-balise_autoclose     : 6
-balise_end           : 4 5
-balise_start         : 4 5
-bloc                 : 1 3 5
-comment              : 7
+attribute            : 19 20
+attributes           : 10 12 15 20
+balise_autoclose     : 7
+balise_end           : 5 6
+balise_start         : 5 6
+bloc                 : 1 2 4 6
+comment              : 8
 document             : 0
-line                 : 2 3
-tag                  : 8 9 10 11
-token                : 12 15 20 22 23
-token_sequence       : 4 23
+jinx_header          : 1
+line                 : 3 4
+tag                  : 9 10 11 12
+token                : 13 16 21 23 24
+token_sequence       : 5 24
 
 Parsing method: LALR
 
 state 0
 
     (0) S' -> . document
-    (1) document -> . bloc
-    (2) bloc -> . line
-    (3) bloc -> . bloc line
-    (4) line -> . balise_start token_sequence balise_end
-    (5) line -> . balise_start bloc balise_end
-    (6) line -> . balise_autoclose
-    (7) line -> . comment
-    (10) balise_start -> . tag >
-    (11) balise_start -> . tag attributes >
-    (8) balise_autoclose -> . tag / >
-    (9) balise_autoclose -> . tag attributes / >
-    (17) comment -> . COMMENT
-    (12) tag -> . < token
-    (13) tag -> . JNX_TAG_START
-    (14) tag -> . JNX_TAG_HEADER
+    (1) document -> . jinx_header bloc
+    (2) document -> . bloc
+    (15) jinx_header -> . JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END
+    (3) bloc -> . line
+    (4) bloc -> . bloc line
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    COMMENT         shift and go to state 8
-    <               shift and go to state 9
-    JNX_TAG_START   shift and go to state 10
-    JNX_TAG_HEADER  shift and go to state 11
+    JNX_TAG_HEADER_START shift and go to state 4
+    COMMENT         shift and go to state 10
+    <               shift and go to state 11
+    JNX_TAG_START   shift and go to state 12
 
     document                       shift and go to state 1
-    bloc                           shift and go to state 2
-    line                           shift and go to state 3
-    balise_start                   shift and go to state 4
-    balise_autoclose               shift and go to state 5
-    comment                        shift and go to state 6
-    tag                            shift and go to state 7
+    jinx_header                    shift and go to state 2
+    bloc                           shift and go to state 3
+    line                           shift and go to state 5
+    balise_start                   shift and go to state 6
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 1
 
@@ -98,444 +103,510 @@ state 1
 
 state 2
 
-    (1) document -> bloc .
-    (3) bloc -> bloc . line
-    (4) line -> . balise_start token_sequence balise_end
-    (5) line -> . balise_start bloc balise_end
-    (6) line -> . balise_autoclose
-    (7) line -> . comment
-    (10) balise_start -> . tag >
-    (11) balise_start -> . tag attributes >
-    (8) balise_autoclose -> . tag / >
-    (9) balise_autoclose -> . tag attributes / >
-    (17) comment -> . COMMENT
-    (12) tag -> . < token
-    (13) tag -> . JNX_TAG_START
-    (14) tag -> . JNX_TAG_HEADER
+    (1) document -> jinx_header . bloc
+    (3) bloc -> . line
+    (4) bloc -> . bloc line
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    $end            reduce using rule 1 (document -> bloc .)
-    COMMENT         shift and go to state 8
-    <               shift and go to state 9
-    JNX_TAG_START   shift and go to state 10
-    JNX_TAG_HEADER  shift and go to state 11
+    COMMENT         shift and go to state 10
+    <               shift and go to state 11
+    JNX_TAG_START   shift and go to state 12
 
-    line                           shift and go to state 12
-    balise_start                   shift and go to state 4
-    balise_autoclose               shift and go to state 5
-    comment                        shift and go to state 6
-    tag                            shift and go to state 7
+    bloc                           shift and go to state 13
+    line                           shift and go to state 5
+    balise_start                   shift and go to state 6
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 3
 
-    (2) bloc -> line .
+    (2) document -> bloc .
+    (4) bloc -> bloc . line
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    COMMENT         reduce using rule 2 (bloc -> line .)
-    <               reduce using rule 2 (bloc -> line .)
-    JNX_TAG_START   reduce using rule 2 (bloc -> line .)
-    JNX_TAG_HEADER  reduce using rule 2 (bloc -> line .)
-    $end            reduce using rule 2 (bloc -> line .)
+    $end            reduce using rule 2 (document -> bloc .)
+    COMMENT         shift and go to state 10
+    <               shift and go to state 11
+    JNX_TAG_START   shift and go to state 12
 
+    line                           shift and go to state 14
+    balise_start                   shift and go to state 6
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 4
 
-    (4) line -> balise_start . token_sequence balise_end
-    (5) line -> balise_start . bloc balise_end
-    (22) token_sequence -> . token
-    (23) token_sequence -> . token_sequence token
-    (2) bloc -> . line
-    (3) bloc -> . bloc line
-    (21) token -> . IDENTIFIER
-    (4) line -> . balise_start token_sequence balise_end
-    (5) line -> . balise_start bloc balise_end
-    (6) line -> . balise_autoclose
-    (7) line -> . comment
-    (10) balise_start -> . tag >
-    (11) balise_start -> . tag attributes >
-    (8) balise_autoclose -> . tag / >
-    (9) balise_autoclose -> . tag attributes / >
-    (17) comment -> . COMMENT
-    (12) tag -> . < token
-    (13) tag -> . JNX_TAG_START
-    (14) tag -> . JNX_TAG_HEADER
+    (15) jinx_header -> JNX_TAG_HEADER_START . attributes JNX_TAG_HEADER_END
+    (19) attributes -> . attribute
+    (20) attributes -> . attributes attribute
+    (21) attribute -> . token = ATTRIB_VAL
+    (22) token -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 16
-    COMMENT         shift and go to state 8
-    <               shift and go to state 9
-    JNX_TAG_START   shift and go to state 10
-    JNX_TAG_HEADER  shift and go to state 11
+    IDENTIFIER      shift and go to state 18
 
-    balise_start                   shift and go to state 4
-    token_sequence                 shift and go to state 13
-    bloc                           shift and go to state 14
-    token                          shift and go to state 15
-    line                           shift and go to state 3
-    balise_autoclose               shift and go to state 5
-    comment                        shift and go to state 6
-    tag                            shift and go to state 7
+    attributes                     shift and go to state 15
+    attribute                      shift and go to state 16
+    token                          shift and go to state 17
 
 state 5
 
-    (6) line -> balise_autoclose .
+    (3) bloc -> line .
 
-    COMMENT         reduce using rule 6 (line -> balise_autoclose .)
-    <               reduce using rule 6 (line -> balise_autoclose .)
-    JNX_TAG_START   reduce using rule 6 (line -> balise_autoclose .)
-    JNX_TAG_HEADER  reduce using rule 6 (line -> balise_autoclose .)
-    $end            reduce using rule 6 (line -> balise_autoclose .)
+    COMMENT         reduce using rule 3 (bloc -> line .)
+    <               reduce using rule 3 (bloc -> line .)
+    JNX_TAG_START   reduce using rule 3 (bloc -> line .)
+    $end            reduce using rule 3 (bloc -> line .)
 
 
 state 6
 
-    (7) line -> comment .
+    (5) line -> balise_start . token_sequence balise_end
+    (6) line -> balise_start . bloc balise_end
+    (23) token_sequence -> . token
+    (24) token_sequence -> . token_sequence token
+    (3) bloc -> . line
+    (4) bloc -> . bloc line
+    (22) token -> . IDENTIFIER
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    COMMENT         reduce using rule 7 (line -> comment .)
-    <               reduce using rule 7 (line -> comment .)
-    JNX_TAG_START   reduce using rule 7 (line -> comment .)
-    JNX_TAG_HEADER  reduce using rule 7 (line -> comment .)
-    $end            reduce using rule 7 (line -> comment .)
+    IDENTIFIER      shift and go to state 18
+    COMMENT         shift and go to state 10
+    <               shift and go to state 11
+    JNX_TAG_START   shift and go to state 12
 
+    balise_start                   shift and go to state 6
+    token_sequence                 shift and go to state 19
+    bloc                           shift and go to state 20
+    token                          shift and go to state 21
+    line                           shift and go to state 5
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 7
 
-    (10) balise_start -> tag . >
-    (11) balise_start -> tag . attributes >
-    (8) balise_autoclose -> tag . / >
-    (9) balise_autoclose -> tag . attributes / >
-    (18) attributes -> . attribute
-    (19) attributes -> . attributes attribute
-    (20) attribute -> . token = ATTRIB_VAL
-    (21) token -> . IDENTIFIER
+    (7) line -> balise_autoclose .
 
-    >               shift and go to state 17
-    /               shift and go to state 19
-    IDENTIFIER      shift and go to state 16
+    COMMENT         reduce using rule 7 (line -> balise_autoclose .)
+    <               reduce using rule 7 (line -> balise_autoclose .)
+    JNX_TAG_START   reduce using rule 7 (line -> balise_autoclose .)
+    $end            reduce using rule 7 (line -> balise_autoclose .)
 
-    attributes                     shift and go to state 18
-    attribute                      shift and go to state 20
-    token                          shift and go to state 21
 
 state 8
 
-    (17) comment -> COMMENT .
+    (8) line -> comment .
 
-    COMMENT         reduce using rule 17 (comment -> COMMENT .)
-    <               reduce using rule 17 (comment -> COMMENT .)
-    JNX_TAG_START   reduce using rule 17 (comment -> COMMENT .)
-    JNX_TAG_HEADER  reduce using rule 17 (comment -> COMMENT .)
-    $end            reduce using rule 17 (comment -> COMMENT .)
+    COMMENT         reduce using rule 8 (line -> comment .)
+    <               reduce using rule 8 (line -> comment .)
+    JNX_TAG_START   reduce using rule 8 (line -> comment .)
+    $end            reduce using rule 8 (line -> comment .)
 
 
 state 9
 
-    (12) tag -> < . token
-    (21) token -> . IDENTIFIER
+    (11) balise_start -> tag . >
+    (12) balise_start -> tag . attributes >
+    (9) balise_autoclose -> tag . / >
+    (10) balise_autoclose -> tag . attributes / >
+    (19) attributes -> . attribute
+    (20) attributes -> . attributes attribute
+    (21) attribute -> . token = ATTRIB_VAL
+    (22) token -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 16
+    >               shift and go to state 22
+    /               shift and go to state 24
+    IDENTIFIER      shift and go to state 18
 
-    token                          shift and go to state 22
+    attributes                     shift and go to state 23
+    attribute                      shift and go to state 16
+    token                          shift and go to state 17
 
 state 10
 
-    (13) tag -> JNX_TAG_START .
+    (18) comment -> COMMENT .
 
-    >               reduce using rule 13 (tag -> JNX_TAG_START .)
-    /               reduce using rule 13 (tag -> JNX_TAG_START .)
-    IDENTIFIER      reduce using rule 13 (tag -> JNX_TAG_START .)
+    COMMENT         reduce using rule 18 (comment -> COMMENT .)
+    <               reduce using rule 18 (comment -> COMMENT .)
+    JNX_TAG_START   reduce using rule 18 (comment -> COMMENT .)
+    $end            reduce using rule 18 (comment -> COMMENT .)
 
 
 state 11
 
-    (14) tag -> JNX_TAG_HEADER .
+    (13) tag -> < . token
+    (22) token -> . IDENTIFIER
 
-    >               reduce using rule 14 (tag -> JNX_TAG_HEADER .)
-    /               reduce using rule 14 (tag -> JNX_TAG_HEADER .)
-    IDENTIFIER      reduce using rule 14 (tag -> JNX_TAG_HEADER .)
+    IDENTIFIER      shift and go to state 18
 
+    token                          shift and go to state 25
 
 state 12
 
-    (3) bloc -> bloc line .
+    (14) tag -> JNX_TAG_START .
 
-    COMMENT         reduce using rule 3 (bloc -> bloc line .)
-    <               reduce using rule 3 (bloc -> bloc line .)
-    JNX_TAG_START   reduce using rule 3 (bloc -> bloc line .)
-    JNX_TAG_HEADER  reduce using rule 3 (bloc -> bloc line .)
-    $end            reduce using rule 3 (bloc -> bloc line .)
+    >               reduce using rule 14 (tag -> JNX_TAG_START .)
+    /               reduce using rule 14 (tag -> JNX_TAG_START .)
+    IDENTIFIER      reduce using rule 14 (tag -> JNX_TAG_START .)
 
 
 state 13
 
-    (4) line -> balise_start token_sequence . balise_end
-    (23) token_sequence -> token_sequence . token
-    (15) balise_end -> . < / token >
-    (16) balise_end -> . < JNX_TAG_END
-    (21) token -> . IDENTIFIER
+    (1) document -> jinx_header bloc .
+    (4) bloc -> bloc . line
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    <               shift and go to state 25
-    IDENTIFIER      shift and go to state 16
+    $end            reduce using rule 1 (document -> jinx_header bloc .)
+    COMMENT         shift and go to state 10
+    <               shift and go to state 11
+    JNX_TAG_START   shift and go to state 12
 
-    balise_end                     shift and go to state 23
-    token                          shift and go to state 24
+    line                           shift and go to state 14
+    balise_start                   shift and go to state 6
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 14
 
-    (5) line -> balise_start bloc . balise_end
-    (3) bloc -> bloc . line
-    (15) balise_end -> . < / token >
-    (16) balise_end -> . < JNX_TAG_END
-    (4) line -> . balise_start token_sequence balise_end
-    (5) line -> . balise_start bloc balise_end
-    (6) line -> . balise_autoclose
-    (7) line -> . comment
-    (10) balise_start -> . tag >
-    (11) balise_start -> . tag attributes >
-    (8) balise_autoclose -> . tag / >
-    (9) balise_autoclose -> . tag attributes / >
-    (17) comment -> . COMMENT
-    (12) tag -> . < token
-    (13) tag -> . JNX_TAG_START
-    (14) tag -> . JNX_TAG_HEADER
+    (4) bloc -> bloc line .
 
-    <               shift and go to state 27
-    COMMENT         shift and go to state 8
-    JNX_TAG_START   shift and go to state 10
-    JNX_TAG_HEADER  shift and go to state 11
+    COMMENT         reduce using rule 4 (bloc -> bloc line .)
+    <               reduce using rule 4 (bloc -> bloc line .)
+    JNX_TAG_START   reduce using rule 4 (bloc -> bloc line .)
+    $end            reduce using rule 4 (bloc -> bloc line .)
 
-    balise_start                   shift and go to state 4
-    balise_end                     shift and go to state 26
-    line                           shift and go to state 12
-    balise_autoclose               shift and go to state 5
-    comment                        shift and go to state 6
-    tag                            shift and go to state 7
 
 state 15
 
-    (22) token_sequence -> token .
+    (15) jinx_header -> JNX_TAG_HEADER_START attributes . JNX_TAG_HEADER_END
+    (20) attributes -> attributes . attribute
+    (21) attribute -> . token = ATTRIB_VAL
+    (22) token -> . IDENTIFIER
 
-    <               reduce using rule 22 (token_sequence -> token .)
-    IDENTIFIER      reduce using rule 22 (token_sequence -> token .)
+    JNX_TAG_HEADER_END shift and go to state 26
+    IDENTIFIER      shift and go to state 18
 
+    attribute                      shift and go to state 27
+    token                          shift and go to state 17
 
 state 16
 
-    (21) token -> IDENTIFIER .
+    (19) attributes -> attribute .
 
-    <               reduce using rule 21 (token -> IDENTIFIER .)
-    IDENTIFIER      reduce using rule 21 (token -> IDENTIFIER .)
-    =               reduce using rule 21 (token -> IDENTIFIER .)
-    >               reduce using rule 21 (token -> IDENTIFIER .)
-    /               reduce using rule 21 (token -> IDENTIFIER .)
+    JNX_TAG_HEADER_END reduce using rule 19 (attributes -> attribute .)
+    IDENTIFIER      reduce using rule 19 (attributes -> attribute .)
+    >               reduce using rule 19 (attributes -> attribute .)
+    /               reduce using rule 19 (attributes -> attribute .)
 
 
 state 17
 
-    (10) balise_start -> tag > .
+    (21) attribute -> token . = ATTRIB_VAL
 
-    IDENTIFIER      reduce using rule 10 (balise_start -> tag > .)
-    COMMENT         reduce using rule 10 (balise_start -> tag > .)
-    <               reduce using rule 10 (balise_start -> tag > .)
-    JNX_TAG_START   reduce using rule 10 (balise_start -> tag > .)
-    JNX_TAG_HEADER  reduce using rule 10 (balise_start -> tag > .)
+    =               shift and go to state 28
 
 
 state 18
 
-    (11) balise_start -> tag attributes . >
-    (9) balise_autoclose -> tag attributes . / >
-    (19) attributes -> attributes . attribute
-    (20) attribute -> . token = ATTRIB_VAL
-    (21) token -> . IDENTIFIER
+    (22) token -> IDENTIFIER .
 
-    >               shift and go to state 28
-    /               shift and go to state 29
-    IDENTIFIER      shift and go to state 16
+    =               reduce using rule 22 (token -> IDENTIFIER .)
+    <               reduce using rule 22 (token -> IDENTIFIER .)
+    IDENTIFIER      reduce using rule 22 (token -> IDENTIFIER .)
+    >               reduce using rule 22 (token -> IDENTIFIER .)
+    /               reduce using rule 22 (token -> IDENTIFIER .)
 
-    attribute                      shift and go to state 30
-    token                          shift and go to state 21
 
 state 19
 
-    (8) balise_autoclose -> tag / . >
+    (5) line -> balise_start token_sequence . balise_end
+    (24) token_sequence -> token_sequence . token
+    (16) balise_end -> . < / token >
+    (17) balise_end -> . < JNX_TAG_END
+    (22) token -> . IDENTIFIER
 
-    >               shift and go to state 31
+    <               shift and go to state 31
+    IDENTIFIER      shift and go to state 18
 
+    balise_end                     shift and go to state 29
+    token                          shift and go to state 30
 
 state 20
 
-    (18) attributes -> attribute .
+    (6) line -> balise_start bloc . balise_end
+    (4) bloc -> bloc . line
+    (16) balise_end -> . < / token >
+    (17) balise_end -> . < JNX_TAG_END
+    (5) line -> . balise_start token_sequence balise_end
+    (6) line -> . balise_start bloc balise_end
+    (7) line -> . balise_autoclose
+    (8) line -> . comment
+    (11) balise_start -> . tag >
+    (12) balise_start -> . tag attributes >
+    (9) balise_autoclose -> . tag / >
+    (10) balise_autoclose -> . tag attributes / >
+    (18) comment -> . COMMENT
+    (13) tag -> . < token
+    (14) tag -> . JNX_TAG_START
 
-    >               reduce using rule 18 (attributes -> attribute .)
-    /               reduce using rule 18 (attributes -> attribute .)
-    IDENTIFIER      reduce using rule 18 (attributes -> attribute .)
+    <               shift and go to state 33
+    COMMENT         shift and go to state 10
+    JNX_TAG_START   shift and go to state 12
 
+    balise_start                   shift and go to state 6
+    balise_end                     shift and go to state 32
+    line                           shift and go to state 14
+    balise_autoclose               shift and go to state 7
+    comment                        shift and go to state 8
+    tag                            shift and go to state 9
 
 state 21
 
-    (20) attribute -> token . = ATTRIB_VAL
+    (23) token_sequence -> token .
 
-    =               shift and go to state 32
+    <               reduce using rule 23 (token_sequence -> token .)
+    IDENTIFIER      reduce using rule 23 (token_sequence -> token .)
 
 
 state 22
 
-    (12) tag -> < token .
+    (11) balise_start -> tag > .
 
-    >               reduce using rule 12 (tag -> < token .)
-    /               reduce using rule 12 (tag -> < token .)
-    IDENTIFIER      reduce using rule 12 (tag -> < token .)
+    IDENTIFIER      reduce using rule 11 (balise_start -> tag > .)
+    COMMENT         reduce using rule 11 (balise_start -> tag > .)
+    <               reduce using rule 11 (balise_start -> tag > .)
+    JNX_TAG_START   reduce using rule 11 (balise_start -> tag > .)
 
 
 state 23
 
-    (4) line -> balise_start token_sequence balise_end .
+    (12) balise_start -> tag attributes . >
+    (10) balise_autoclose -> tag attributes . / >
+    (20) attributes -> attributes . attribute
+    (21) attribute -> . token = ATTRIB_VAL
+    (22) token -> . IDENTIFIER
 
-    COMMENT         reduce using rule 4 (line -> balise_start token_sequence balise_end .)
-    <               reduce using rule 4 (line -> balise_start token_sequence balise_end .)
-    JNX_TAG_START   reduce using rule 4 (line -> balise_start token_sequence balise_end .)
-    JNX_TAG_HEADER  reduce using rule 4 (line -> balise_start token_sequence balise_end .)
-    $end            reduce using rule 4 (line -> balise_start token_sequence balise_end .)
+    >               shift and go to state 34
+    /               shift and go to state 35
+    IDENTIFIER      shift and go to state 18
 
+    attribute                      shift and go to state 27
+    token                          shift and go to state 17
 
 state 24
 
-    (23) token_sequence -> token_sequence token .
+    (9) balise_autoclose -> tag / . >
 
-    <               reduce using rule 23 (token_sequence -> token_sequence token .)
-    IDENTIFIER      reduce using rule 23 (token_sequence -> token_sequence token .)
+    >               shift and go to state 36
 
 
 state 25
 
-    (15) balise_end -> < . / token >
-    (16) balise_end -> < . JNX_TAG_END
+    (13) tag -> < token .
 
-    /               shift and go to state 33
-    JNX_TAG_END     shift and go to state 34
+    >               reduce using rule 13 (tag -> < token .)
+    /               reduce using rule 13 (tag -> < token .)
+    IDENTIFIER      reduce using rule 13 (tag -> < token .)
 
 
 state 26
 
-    (5) line -> balise_start bloc balise_end .
+    (15) jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END .
 
-    COMMENT         reduce using rule 5 (line -> balise_start bloc balise_end .)
-    <               reduce using rule 5 (line -> balise_start bloc balise_end .)
-    JNX_TAG_START   reduce using rule 5 (line -> balise_start bloc balise_end .)
-    JNX_TAG_HEADER  reduce using rule 5 (line -> balise_start bloc balise_end .)
-    $end            reduce using rule 5 (line -> balise_start bloc balise_end .)
+    COMMENT         reduce using rule 15 (jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END .)
+    <               reduce using rule 15 (jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END .)
+    JNX_TAG_START   reduce using rule 15 (jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END .)
 
 
 state 27
 
-    (15) balise_end -> < . / token >
-    (16) balise_end -> < . JNX_TAG_END
-    (12) tag -> < . token
-    (21) token -> . IDENTIFIER
+    (20) attributes -> attributes attribute .
 
-    /               shift and go to state 33
-    JNX_TAG_END     shift and go to state 34
-    IDENTIFIER      shift and go to state 16
+    JNX_TAG_HEADER_END reduce using rule 20 (attributes -> attributes attribute .)
+    IDENTIFIER      reduce using rule 20 (attributes -> attributes attribute .)
+    >               reduce using rule 20 (attributes -> attributes attribute .)
+    /               reduce using rule 20 (attributes -> attributes attribute .)
 
-    token                          shift and go to state 22
 
 state 28
 
-    (11) balise_start -> tag attributes > .
+    (21) attribute -> token = . ATTRIB_VAL
 
-    IDENTIFIER      reduce using rule 11 (balise_start -> tag attributes > .)
-    COMMENT         reduce using rule 11 (balise_start -> tag attributes > .)
-    <               reduce using rule 11 (balise_start -> tag attributes > .)
-    JNX_TAG_START   reduce using rule 11 (balise_start -> tag attributes > .)
-    JNX_TAG_HEADER  reduce using rule 11 (balise_start -> tag attributes > .)
+    ATTRIB_VAL      shift and go to state 37
 
 
 state 29
 
-    (9) balise_autoclose -> tag attributes / . >
+    (5) line -> balise_start token_sequence balise_end .
 
-    >               shift and go to state 35
+    COMMENT         reduce using rule 5 (line -> balise_start token_sequence balise_end .)
+    <               reduce using rule 5 (line -> balise_start token_sequence balise_end .)
+    JNX_TAG_START   reduce using rule 5 (line -> balise_start token_sequence balise_end .)
+    $end            reduce using rule 5 (line -> balise_start token_sequence balise_end .)
 
 
 state 30
 
-    (19) attributes -> attributes attribute .
+    (24) token_sequence -> token_sequence token .
 
-    >               reduce using rule 19 (attributes -> attributes attribute .)
-    /               reduce using rule 19 (attributes -> attributes attribute .)
-    IDENTIFIER      reduce using rule 19 (attributes -> attributes attribute .)
+    <               reduce using rule 24 (token_sequence -> token_sequence token .)
+    IDENTIFIER      reduce using rule 24 (token_sequence -> token_sequence token .)
 
 
 state 31
 
-    (8) balise_autoclose -> tag / > .
+    (16) balise_end -> < . / token >
+    (17) balise_end -> < . JNX_TAG_END
 
-    COMMENT         reduce using rule 8 (balise_autoclose -> tag / > .)
-    <               reduce using rule 8 (balise_autoclose -> tag / > .)
-    JNX_TAG_START   reduce using rule 8 (balise_autoclose -> tag / > .)
-    JNX_TAG_HEADER  reduce using rule 8 (balise_autoclose -> tag / > .)
-    $end            reduce using rule 8 (balise_autoclose -> tag / > .)
+    /               shift and go to state 38
+    JNX_TAG_END     shift and go to state 39
 
 
 state 32
 
-    (20) attribute -> token = . ATTRIB_VAL
+    (6) line -> balise_start bloc balise_end .
 
-    ATTRIB_VAL      shift and go to state 36
+    COMMENT         reduce using rule 6 (line -> balise_start bloc balise_end .)
+    <               reduce using rule 6 (line -> balise_start bloc balise_end .)
+    JNX_TAG_START   reduce using rule 6 (line -> balise_start bloc balise_end .)
+    $end            reduce using rule 6 (line -> balise_start bloc balise_end .)
 
 
 state 33
 
-    (15) balise_end -> < / . token >
-    (21) token -> . IDENTIFIER
+    (16) balise_end -> < . / token >
+    (17) balise_end -> < . JNX_TAG_END
+    (13) tag -> < . token
+    (22) token -> . IDENTIFIER
 
-    IDENTIFIER      shift and go to state 16
+    /               shift and go to state 38
+    JNX_TAG_END     shift and go to state 39
+    IDENTIFIER      shift and go to state 18
 
-    token                          shift and go to state 37
+    token                          shift and go to state 25
 
 state 34
 
-    (16) balise_end -> < JNX_TAG_END .
+    (12) balise_start -> tag attributes > .
 
-    COMMENT         reduce using rule 16 (balise_end -> < JNX_TAG_END .)
-    <               reduce using rule 16 (balise_end -> < JNX_TAG_END .)
-    JNX_TAG_START   reduce using rule 16 (balise_end -> < JNX_TAG_END .)
-    JNX_TAG_HEADER  reduce using rule 16 (balise_end -> < JNX_TAG_END .)
-    $end            reduce using rule 16 (balise_end -> < JNX_TAG_END .)
+    IDENTIFIER      reduce using rule 12 (balise_start -> tag attributes > .)
+    COMMENT         reduce using rule 12 (balise_start -> tag attributes > .)
+    <               reduce using rule 12 (balise_start -> tag attributes > .)
+    JNX_TAG_START   reduce using rule 12 (balise_start -> tag attributes > .)
 
 
 state 35
 
-    (9) balise_autoclose -> tag attributes / > .
+    (10) balise_autoclose -> tag attributes / . >
 
-    COMMENT         reduce using rule 9 (balise_autoclose -> tag attributes / > .)
-    <               reduce using rule 9 (balise_autoclose -> tag attributes / > .)
-    JNX_TAG_START   reduce using rule 9 (balise_autoclose -> tag attributes / > .)
-    JNX_TAG_HEADER  reduce using rule 9 (balise_autoclose -> tag attributes / > .)
-    $end            reduce using rule 9 (balise_autoclose -> tag attributes / > .)
+    >               shift and go to state 40
 
 
 state 36
 
-    (20) attribute -> token = ATTRIB_VAL .
+    (9) balise_autoclose -> tag / > .
 
-    >               reduce using rule 20 (attribute -> token = ATTRIB_VAL .)
-    /               reduce using rule 20 (attribute -> token = ATTRIB_VAL .)
-    IDENTIFIER      reduce using rule 20 (attribute -> token = ATTRIB_VAL .)
+    COMMENT         reduce using rule 9 (balise_autoclose -> tag / > .)
+    <               reduce using rule 9 (balise_autoclose -> tag / > .)
+    JNX_TAG_START   reduce using rule 9 (balise_autoclose -> tag / > .)
+    $end            reduce using rule 9 (balise_autoclose -> tag / > .)
 
 
 state 37
 
-    (15) balise_end -> < / token . >
+    (21) attribute -> token = ATTRIB_VAL .
 
-    >               shift and go to state 38
+    JNX_TAG_HEADER_END reduce using rule 21 (attribute -> token = ATTRIB_VAL .)
+    IDENTIFIER      reduce using rule 21 (attribute -> token = ATTRIB_VAL .)
+    >               reduce using rule 21 (attribute -> token = ATTRIB_VAL .)
+    /               reduce using rule 21 (attribute -> token = ATTRIB_VAL .)
 
 
 state 38
 
-    (15) balise_end -> < / token > .
+    (16) balise_end -> < / . token >
+    (22) token -> . IDENTIFIER
 
-    COMMENT         reduce using rule 15 (balise_end -> < / token > .)
-    <               reduce using rule 15 (balise_end -> < / token > .)
-    JNX_TAG_START   reduce using rule 15 (balise_end -> < / token > .)
-    JNX_TAG_HEADER  reduce using rule 15 (balise_end -> < / token > .)
-    $end            reduce using rule 15 (balise_end -> < / token > .)
+    IDENTIFIER      shift and go to state 18
+
+    token                          shift and go to state 41
+
+state 39
+
+    (17) balise_end -> < JNX_TAG_END .
+
+    COMMENT         reduce using rule 17 (balise_end -> < JNX_TAG_END .)
+    <               reduce using rule 17 (balise_end -> < JNX_TAG_END .)
+    JNX_TAG_START   reduce using rule 17 (balise_end -> < JNX_TAG_END .)
+    $end            reduce using rule 17 (balise_end -> < JNX_TAG_END .)
+
+
+state 40
+
+    (10) balise_autoclose -> tag attributes / > .
+
+    COMMENT         reduce using rule 10 (balise_autoclose -> tag attributes / > .)
+    <               reduce using rule 10 (balise_autoclose -> tag attributes / > .)
+    JNX_TAG_START   reduce using rule 10 (balise_autoclose -> tag attributes / > .)
+    $end            reduce using rule 10 (balise_autoclose -> tag attributes / > .)
+
+
+state 41
+
+    (16) balise_end -> < / token . >
+
+    >               shift and go to state 42
+
+
+state 42
+
+    (16) balise_end -> < / token > .
+
+    COMMENT         reduce using rule 16 (balise_end -> < / token > .)
+    <               reduce using rule 16 (balise_end -> < / token > .)
+    JNX_TAG_START   reduce using rule 16 (balise_end -> < / token > .)
+    $end            reduce using rule 16 (balise_end -> < / token > .)
 

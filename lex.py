@@ -4,7 +4,8 @@ import os
 
 tokens = (
     'IDENTIFIER',
-    'JNX_TAG_HEADER',
+    'JNX_TAG_HEADER_START',
+    'JNX_TAG_HEADER_END',
     'JNX_TAG_START',
     'JNX_TAG_END',
     'ATTRIB_VAL',
@@ -28,8 +29,12 @@ def t_JNX_TAG_END(t):
     r"/jnx:\w*>"
     return t
 
-def t_JNX_TAG_HEADER(t):
+def t_JNX_TAG_HEADER_START(t):
     r"<\?jnx"
+    return t
+
+def t_JNX_TAG_HEADER_END(t):
+    r"\?>"
     return t
 
 def t_COMMENT(t):

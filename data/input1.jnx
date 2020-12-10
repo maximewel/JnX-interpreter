@@ -1,4 +1,4 @@
-<?jnx version="1.0" encoding="UTF-8"/>
+<?jnx version="1.0" encoding="UTF-8" ?>
 
 <jnx:var name="test">
     <jnx:value>132</jnx:value>
