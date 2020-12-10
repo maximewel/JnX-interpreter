@@ -35,7 +35,8 @@ def p_bloc_multiple(p):
 def p_line(p):
     ''' line : balise_start token_sequence balise_end
     | balise_start bloc balise_end 
-    | balise_autoclose'''
+    | balise_autoclose
+    | comment '''
     try :
         p[0] = ast.LineNode([p[1], p[2], p[3]])
     except IndexError:
@@ -59,6 +60,8 @@ def p_balise_start(p):
     else :
         p[0] = ast.BaliseStartNode(p[1])
 
+
+# TAGS : XML, JNX, JNX-Header
 def p_tag(p):
     ''' tag : "<" token '''
     p[0] = p[2]
@@ -70,6 +73,11 @@ def p_tag_jinx(p):
         p[0] = jnxNodes[jinxWord]
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
+
+def p_tag_jinx_header(p):
+    ''' tag : JNX_TAG_HEADER '''
+    p[0] = ast.JnxHeader()
+
 
 def p_balise_end(p):
     ''' balise_end : "<" "/" token  ">" '''
@@ -83,6 +91,9 @@ def p_balise_end_jinx(p):
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
+def p_comment(p):
+    ''' comment : COMMENT '''
+    p[0] = ast.CommentNode(p[1].replace("<!--", "").replace("-->", ""))
 # ---- ATTRIBUTES ---- 
 
 def p_attributes_sequence(p):
@@ -127,7 +138,7 @@ if __name__ == "__main__":
     #build the graph
     filename = os.getcwd() + "\\" + sys.argv[1]
     with open(filename) as prog :
-        result = yacc.parse(prog.read())
+        result = yacc.parse(prog.read(), debug=True)
         print(result)
     #write graph to file-ast.pdf in output directory
     graph = result.makegraphicaltree()

@@ -79,7 +79,7 @@ class AttributeNode(Node):
     
 class BaliseStartNode(Node):
     type = 'start'
-    
+
 class BaliseEndNode(Node):
     type = 'end'
 
@@ -88,7 +88,10 @@ class LineNode(Node):
 
 class BlocNode(Node):
     type='bloc'
-        
+
+class JnxHeader(Node):
+    type='header'
+
 class JnxGetNode(Node):
     type='get'
 
@@ -104,6 +107,14 @@ class JnxValueNode(Node):
 class JnxForNode(Node):
     type='for'
 
+class CommentNode(Node):
+    type = 'comment'
+    def __init__(self, comment):
+        Node.__init__(self)
+        self.comment = comment
+        
+    def __repr__(self):
+        return repr("comment : " + self.comment)
     
 def addToClass(cls):
     ''' D�corateur permettant d'ajouter la fonction d�cor�e en tant que m�thode
