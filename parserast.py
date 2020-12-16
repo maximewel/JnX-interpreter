@@ -7,11 +7,11 @@ from lex import tokens
 import ast
 
 jnxNodes = {
-    'get' : ast.JnxGetNode(),
-    'var' : ast.JnxVarNode(),
-    'foreach' : ast.JnxForeachNode(),
-    'value' : ast.JnxValueNode(),
-    'for' : ast.JnxForNode(),
+    'get' : lambda: ast.JnxGetNode(),
+    'var' : lambda: ast.JnxVarNode(),
+    'foreach' : lambda: ast.JnxForeachNode(),
+    'value' : lambda: ast.JnxValueNode(),
+    'for' : lambda: ast.JnxForNode(),
 }
 
 precedence = (
@@ -48,13 +48,21 @@ def p_line(p):
     
 # ---- BALISES ----
 
-def p_autoBalise(p):
+def p_auto_balise(p):
     ''' balise_autoclose : tag "/" ">"
     | tag attributes "/" ">" '''
     if len(p) > 4:
-        p[0] = ast.LineNode([ast.BaliseStartNode([p[1], p[2]]), ast.TokenNode('VIDE'), ast.BaliseEndNode(p[1])])
+        p[0] = ast.LineNode([ast.BaliseStartNode([p[1], p[2]])])
     else:
-        p[0] = ast.LineNode([ast.BaliseStartNode(p[1]), ast.TokenNode('VIDE'), ast.BaliseEndNode(p[1])])
+        p[0] = ast.LineNode([ast.BaliseStartNode(p[1])])
+
+def p_auto_balise_jnx(p):
+    ''' balise_autoclose : tag_jnx "/" ">"
+    | tag_jnx attributes "/" ">" '''
+    if len(p) > 4:
+        [p[1].children.append(c) for c in p[2].children]
+
+    p[0] = ast.LineNode([ast.BaliseStartNode(p[1])])
 
 def p_balise_start(p):
     ''' balise_start : tag ">"
@@ -64,16 +72,24 @@ def p_balise_start(p):
     else :
         p[0] = ast.BaliseStartNode(p[1])
 
+def p_balise_start_jnx(p):
+    ''' balise_start : tag_jnx ">"
+    | tag_jnx attributes ">"'''
+    if len(p) > 3:
+        [p[1].children.append(c) for c in p[2].children]
+
+    p[0] = ast.BaliseStartNode(p[1])
+
 # TAGS : XML, JNX, JNX-Header
 def p_tag(p):
     ''' tag : "<" token '''
     p[0] = p[2]
 
 def p_tag_jinx(p):
-    ''' tag : JNX_TAG_START '''
+    ''' tag_jnx : JNX_TAG_START '''
     jinxWord = p[1].split(":")[-1]
     try:
-        p[0] = jnxNodes[jinxWord]
+        p[0] = jnxNodes[jinxWord]()
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
@@ -89,13 +105,14 @@ def p_balise_end_jinx(p):
     ''' balise_end : "<" JNX_TAG_END '''
     jinxWord = p[2].split(":")[-1].replace(">", "")
     try:
-        p[0] =  ast.BaliseEndNode(jnxNodes[jinxWord])
+        p[0] = ast.BaliseEndNode(jnxNodes[jinxWord]())
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
 def p_comment(p):
     ''' comment : COMMENT '''
     p[0] = ast.CommentNode(p[1].replace("<!--", "").replace("-->", ""))
+    
 # ---- ATTRIBUTES ---- 
 
 def p_attributes_sequence(p):

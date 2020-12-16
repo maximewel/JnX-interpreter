@@ -10,6 +10,7 @@ import os
 
 """ --- init variables --- """
 vars = {}
+tags = []
 
 """ --- Nodes gestion ---"""
 
@@ -47,11 +48,65 @@ def interpret(self):
 def interpret(self):
     return interpretChildren(self)
 
+""" ---- LINES-Nodes ---- """
+
+@addToClass(ast.InfoNode)
+def interpret(self):
+    return interpretChildren(self)
+
+@addToClass(ast.TokenNode)
+def interpret(self):
+    return self.children[0]
+
+@addToClass(ast.AttributeNode)
+def interpret(self):
+    return f" {self.children[0]}={self.children[1]}"
+
+@addToClass(ast.BaliseStartNode)
+def interpret(self):
+    currentTag = self.children[0]
+    tags.append(currentTag)
+    output = f"<{currentTag}"
+    if len(self.children) >= 2:
+        output += f" {self.children[0].interpret()}"
+    output += ">\n"
+    
+    return output
+
+@addToClass(ast.BaliseEndNode)
+def interpret(self):
+    lastTag = tags.pop(0)
+    if (lastTag != self.children[0]):
+        pass # output error and exit
+
+    return f"</{lastTag}>\n"
+
+"""  ---- JINX-NODES ----   """
+@addToClass(ast.JnxGetNode)
+def interpret(self):
+    return vars[self.]
+
+@addToClass(ast.JnxVarNode)
+def interpret(self):
+    pass
+
+@addToClass(ast.JnxForeachNode)
+def interpret(self):
+    pass
+
+@addToClass(ast.JnxValueNode)
+def interpret(self):
+    pass
+
+@addToClass(ast.JnxForNode)
+def interpret(self):
+    pass
+
 
 if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
     ast = parse(prog)
-    compiled = ast.compile()
+    compiled = ast.interpret()
 
     fileWithoutPath = sys.argv[1].split('\\')[-1]
     fileWithoutExtension = os.path.splitext(fileWithoutPath)[0]

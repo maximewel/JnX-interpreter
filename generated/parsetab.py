@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftTRANSFORM_NODEATTRIB_VAL COMMENT IDENTIFIER JNX_TAG_END JNX_TAG_HEADER_END JNX_TAG_HEADER_START JNX_TAG_START document : jinx_header bloc \n    | bloc bloc : line %prec TRANSFORM_NODE  bloc : bloc line  line : balise_start token_sequence balise_end\n    | balise_start bloc balise_end \n    | balise_autoclose\n    | comment  balise_autoclose : tag "/" ">"\n    | tag attributes "/" ">"  balise_start : tag ">"\n    | tag attributes ">" tag : "<" token  tag : JNX_TAG_START  jinx_header : JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END balise_end : "<" "/" token  ">"  balise_end : "<" JNX_TAG_END  comment : COMMENT  attributes : attribute \n    | attributes attribute attribute : token "=" ATTRIB_VAL  token : IDENTIFIER  token_sequence : token\n    | token_sequence token '
+_lr_signature = 'leftTRANSFORM_NODEATTRIB_VAL COMMENT IDENTIFIER JNX_TAG_END JNX_TAG_HEADER_END JNX_TAG_HEADER_START JNX_TAG_START document : jinx_header bloc \n    | bloc bloc : line %prec TRANSFORM_NODE  bloc : bloc line  line : balise_start token_sequence balise_end\n    | balise_start bloc balise_end \n    | balise_autoclose\n    | comment  balise_autoclose : tag "/" ">"\n    | tag attributes "/" ">"  balise_autoclose : tag_jnx "/" ">"\n    | tag_jnx attributes "/" ">"  balise_start : tag ">"\n    | tag attributes ">" balise_start : tag_jnx ">"\n    | tag_jnx attributes ">" tag : "<" token  tag_jnx : JNX_TAG_START  jinx_header : JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END balise_end : "<" "/" token  ">"  balise_end : "<" JNX_TAG_END  comment : COMMENT  attributes : attribute \n    | attributes attribute attribute : token "=" ATTRIB_VAL  token : IDENTIFIER  token_sequence : token\n    | token_sequence token '
     
-_lr_action_items = {'JNX_TAG_HEADER_START':([0,],[4,]),'COMMENT':([0,2,3,5,6,7,8,10,13,14,20,22,26,29,32,34,36,39,40,42,],[10,10,10,-3,10,-7,-8,-18,10,-4,10,-11,-15,-5,-6,-12,-9,-17,-10,-16,]),'<':([0,2,3,5,6,7,8,10,13,14,18,19,20,21,22,26,29,30,32,34,36,39,40,42,],[11,11,11,-3,11,-7,-8,-18,11,-4,-22,31,33,-23,-11,-15,-5,-24,-6,-12,-9,-17,-10,-16,]),'JNX_TAG_START':([0,2,3,5,6,7,8,10,13,14,20,22,26,29,32,34,36,39,40,42,],[12,12,12,-3,12,-7,-8,-18,12,-4,12,-11,-15,-5,-6,-12,-9,-17,-10,-16,]),'$end':([1,3,5,7,8,10,13,14,29,32,36,39,40,42,],[0,-2,-3,-7,-8,-18,-1,-4,-5,-6,-9,-17,-10,-16,]),'IDENTIFIER':([4,6,9,11,12,15,16,18,19,21,22,23,25,27,30,33,34,37,38,],[18,18,18,18,-14,18,-19,-22,18,-23,-11,18,-13,-20,-24,18,-12,-21,18,]),'>':([9,12,16,18,23,24,25,27,35,37,41,],[22,-14,-19,-22,34,36,-13,-20,40,-21,42,]),'/':([9,12,16,18,23,25,27,31,33,37,],[24,-14,-19,-22,35,-13,-20,38,38,-21,]),'JNX_TAG_HEADER_END':([15,16,27,37,],[26,-19,-20,-21,]),'=':([17,18,],[28,-22,]),'ATTRIB_VAL':([28,],[37,]),'JNX_TAG_END':([31,33,],[39,39,]),}
+_lr_action_items = {'JNX_TAG_HEADER_START':([0,],[4,]),'COMMENT':([0,2,3,5,6,7,8,11,14,15,21,23,26,30,33,36,38,40,41,43,46,47,48,50,],[11,11,11,-3,11,-7,-8,-22,11,-4,11,-13,-15,-19,-5,-6,-14,-9,-16,-11,-21,-10,-12,-20,]),'<':([0,2,3,5,6,7,8,11,14,15,19,20,21,22,23,26,30,33,34,36,38,40,41,43,46,47,48,50,],[12,12,12,-3,12,-7,-8,-22,12,-4,-26,35,37,-27,-13,-15,-19,-5,-28,-6,-14,-9,-16,-11,-21,-10,-12,-20,]),'JNX_TAG_START':([0,2,3,5,6,7,8,11,14,15,21,23,26,30,33,36,38,40,41,43,46,47,48,50,],[13,13,13,-3,13,-7,-8,-22,13,-4,13,-13,-15,-19,-5,-6,-14,-9,-16,-11,-21,-10,-12,-20,]),'$end':([1,3,5,7,8,11,14,15,33,36,40,43,46,47,48,50,],[0,-2,-3,-7,-8,-22,-1,-4,-5,-6,-9,-11,-21,-10,-12,-20,]),'IDENTIFIER':([4,6,9,10,12,13,16,17,19,20,22,23,24,26,27,29,31,34,37,38,41,44,45,],[19,19,19,19,19,-18,19,-23,-26,19,-27,-13,19,-15,19,-17,-24,-28,19,-14,-16,-25,19,]),'>':([9,10,13,17,19,24,25,27,28,29,31,39,42,44,49,],[23,26,-18,-23,-26,38,40,41,43,-17,-24,47,48,-25,50,]),'/':([9,10,13,17,19,24,27,29,31,35,37,44,],[25,28,-18,-23,-26,39,42,-17,-24,45,45,-25,]),'JNX_TAG_HEADER_END':([16,17,31,44,],[30,-23,-24,-25,]),'=':([18,19,],[32,-26,]),'ATTRIB_VAL':([32,],[44,]),'JNX_TAG_END':([35,37,],[46,46,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'document':([0,],[1,]),'jinx_header':([0,],[2,]),'bloc':([0,2,6,],[3,13,20,]),'line':([0,2,3,6,13,20,],[5,5,14,5,14,14,]),'balise_start':([0,2,3,6,13,20,],[6,6,6,6,6,6,]),'balise_autoclose':([0,2,3,6,13,20,],[7,7,7,7,7,7,]),'comment':([0,2,3,6,13,20,],[8,8,8,8,8,8,]),'tag':([0,2,3,6,13,20,],[9,9,9,9,9,9,]),'attributes':([4,9,],[15,23,]),'attribute':([4,9,15,23,],[16,16,27,27,]),'token':([4,6,9,11,15,19,23,33,38,],[17,21,17,25,17,30,17,25,41,]),'token_sequence':([6,],[19,]),'balise_end':([19,20,],[29,32,]),}
+_lr_goto_items = {'document':([0,],[1,]),'jinx_header':([0,],[2,]),'bloc':([0,2,6,],[3,14,21,]),'line':([0,2,3,6,14,21,],[5,5,15,5,15,15,]),'balise_start':([0,2,3,6,14,21,],[6,6,6,6,6,6,]),'balise_autoclose':([0,2,3,6,14,21,],[7,7,7,7,7,7,]),'comment':([0,2,3,6,14,21,],[8,8,8,8,8,8,]),'tag':([0,2,3,6,14,21,],[9,9,9,9,9,9,]),'tag_jnx':([0,2,3,6,14,21,],[10,10,10,10,10,10,]),'attributes':([4,9,10,],[16,24,27,]),'attribute':([4,9,10,16,24,27,],[17,17,17,31,31,31,]),'token':([4,6,9,10,12,16,20,24,27,37,45,],[18,22,18,18,29,18,34,18,18,29,49,]),'token_sequence':([6,],[20,]),'balise_end':([20,21,],[33,36,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -35,20 +35,24 @@ _lr_productions = [
   ('line -> balise_start bloc balise_end','line',3,'p_line','parserast.py',41),
   ('line -> balise_autoclose','line',1,'p_line','parserast.py',42),
   ('line -> comment','line',1,'p_line','parserast.py',43),
-  ('balise_autoclose -> tag / >','balise_autoclose',3,'p_autoBalise','parserast.py',52),
-  ('balise_autoclose -> tag attributes / >','balise_autoclose',4,'p_autoBalise','parserast.py',53),
-  ('balise_start -> tag >','balise_start',2,'p_balise_start','parserast.py',60),
-  ('balise_start -> tag attributes >','balise_start',3,'p_balise_start','parserast.py',61),
-  ('tag -> < token','tag',2,'p_tag','parserast.py',69),
-  ('tag -> JNX_TAG_START','tag',1,'p_tag_jinx','parserast.py',73),
-  ('jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END','jinx_header',3,'p_jinx_header','parserast.py',81),
-  ('balise_end -> < / token >','balise_end',4,'p_balise_end','parserast.py',85),
-  ('balise_end -> < JNX_TAG_END','balise_end',2,'p_balise_end_jinx','parserast.py',89),
-  ('comment -> COMMENT','comment',1,'p_comment','parserast.py',97),
-  ('attributes -> attribute','attributes',1,'p_attributes_sequence','parserast.py',102),
-  ('attributes -> attributes attribute','attributes',2,'p_attributes_sequence','parserast.py',103),
-  ('attribute -> token = ATTRIB_VAL','attribute',3,'p_attribute','parserast.py',110),
-  ('token -> IDENTIFIER','token',1,'p_token','parserast.py',116),
-  ('token_sequence -> token','token_sequence',1,'p_token_sequence','parserast.py',120),
-  ('token_sequence -> token_sequence token','token_sequence',2,'p_token_sequence','parserast.py',121),
+  ('balise_autoclose -> tag / >','balise_autoclose',3,'p_auto_balise','parserast.py',52),
+  ('balise_autoclose -> tag attributes / >','balise_autoclose',4,'p_auto_balise','parserast.py',53),
+  ('balise_autoclose -> tag_jnx / >','balise_autoclose',3,'p_auto_balise_jnx','parserast.py',60),
+  ('balise_autoclose -> tag_jnx attributes / >','balise_autoclose',4,'p_auto_balise_jnx','parserast.py',61),
+  ('balise_start -> tag >','balise_start',2,'p_balise_start','parserast.py',70),
+  ('balise_start -> tag attributes >','balise_start',3,'p_balise_start','parserast.py',71),
+  ('balise_start -> tag_jnx >','balise_start',2,'p_balise_start_jnx','parserast.py',78),
+  ('balise_start -> tag_jnx attributes >','balise_start',3,'p_balise_start_jnx','parserast.py',79),
+  ('tag -> < token','tag',2,'p_tag','parserast.py',88),
+  ('tag_jnx -> JNX_TAG_START','tag_jnx',1,'p_tag_jinx','parserast.py',92),
+  ('jinx_header -> JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END','jinx_header',3,'p_jinx_header','parserast.py',100),
+  ('balise_end -> < / token >','balise_end',4,'p_balise_end','parserast.py',104),
+  ('balise_end -> < JNX_TAG_END','balise_end',2,'p_balise_end_jinx','parserast.py',108),
+  ('comment -> COMMENT','comment',1,'p_comment','parserast.py',116),
+  ('attributes -> attribute','attributes',1,'p_attributes_sequence','parserast.py',121),
+  ('attributes -> attributes attribute','attributes',2,'p_attributes_sequence','parserast.py',122),
+  ('attribute -> token = ATTRIB_VAL','attribute',3,'p_attribute','parserast.py',129),
+  ('token -> IDENTIFIER','token',1,'p_token','parserast.py',135),
+  ('token_sequence -> token','token_sequence',1,'p_token_sequence','parserast.py',139),
+  ('token_sequence -> token_sequence token','token_sequence',2,'p_token_sequence','parserast.py',140),
 ]
