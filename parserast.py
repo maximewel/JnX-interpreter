@@ -125,6 +125,7 @@ def p_attributes_sequence(p):
 
 def p_attribute(p):
     ''' attribute : token "=" ATTRIB_VAL '''
+    p[3] = p[3][1:-1] # get ride of quotes
     p[0] = ast.AttributeNode([p[1], ast.TokenNode(p[3])])
 
 # ---- TOKENS AND STRINGS ---- 
@@ -157,7 +158,7 @@ if __name__ == "__main__":
     #build the graph
     filename = os.getcwd() + "\\" + sys.argv[1]
     with open(filename) as prog :
-        result = yacc.parse(prog.read(), debug=True)
+        result = yacc.parse(prog.read(), debug=False)
         print(result)
     #write graph to file-ast.pdf in output directory
     graph = result.makegraphicaltree()

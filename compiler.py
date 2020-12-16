@@ -11,6 +11,7 @@ import os
 """ --- init variables --- """
 vars = {}
 tags = []
+lastVar = None;
 
 """ --- Nodes gestion ---"""
 
@@ -66,10 +67,9 @@ def interpret(self):
 def interpret(self):
     currentTag = self.children[0]
     tags.append(currentTag)
-    output = f"<{currentTag}"
+    output = f"{currentTag}"
     if len(self.children) >= 2:
         output += f" {self.children[0].interpret()}"
-    output += ">\n"
     
     return output
 
@@ -79,29 +79,53 @@ def interpret(self):
     if (lastTag != self.children[0]):
         pass # output error and exit
 
-    return f"</{lastTag}>\n"
+    return f"{lastTag}"
 
 """  ---- JINX-NODES ----   """
+def getValFromAttributeName(node, name):
+    attrib = getAttributeFromAttributeName(node, name)
+
+    if attrib is None:
+        pass #error
+
+    return attrib.children[1]
+
+def getAttributeFromAttributeName(node, name):
+    for child in node.children:
+        if not isinstance(child, ast.AttributeNode):
+            if child.children[0] == name:
+                return child
+    return None # replace by an error ?
+
 @addToClass(ast.JnxGetNode)
 def interpret(self):
-    return vars[self.]
+    value = getValFromAttributeName(self, "name")
+    return vars[value]
 
 @addToClass(ast.JnxVarNode)
 def interpret(self):
-    pass
+    value = getValFromAttributeName(self, "name")
+    vars[value] = []
 
 @addToClass(ast.JnxForeachNode)
 def interpret(self):
-    pass
+    output = ""
+    collectionName = getValFromAttributeName(self, "in")
+    itName = getValFromAttributeName(self, "name")
+
+    for it in vars[collectionName]:
+        vars[itName] = it
+        self.chidren[0].interpret()
 
 @addToClass(ast.JnxValueNode)
 def interpret(self):
-    pass
+    if lastVar==None:
+        pass # shutout error value is not in a var balise
+    vars[lastVar].append(self.children[1])
 
 @addToClass(ast.JnxForNode)
 def interpret(self):
     pass
-
 
 if __name__ == "__main__":
     prog = open(sys.argv[1]).read()
