@@ -114,22 +114,24 @@ def interpret(self):
 
 @addToClass(ast.JnxVarNode)
 def interpret(self):
+    global lastVar
     name = getValFromAttributeName(self, "name")
-    collec = []
+    vars[name] = []
+    lastVar = name
+    output = ""
 
     if type(self.children[-1]) is ast.BlocNode and len(self.children[-1].children):
         for c in self.children[-1].children:
-            val = c.interpret()
-            collec.append(val)
+            output += c.interpret()
 
-        vars[name] = collec
-
-    return ""
+    return output
 
 
 @addToClass(ast.JnxValueNode)
 def interpret(self):
-    return self.children[0].tok
+    global lastVar
+    vars[lastVar].append(self.children[0].tok)
+    return ""
 
 @addToClass(ast.JnxForeachNode)
 def interpret(self):
