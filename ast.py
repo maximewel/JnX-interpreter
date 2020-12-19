@@ -88,16 +88,10 @@ class LineNode(Node):
         base = Node.__repr__(self) 
         return f"{base} : {self.tag}"
 
-class InlineNode(Node):
+class InlineNode(LineNode):
     type='inline'
     def __init__(self, tag, info=None):
-        Node.__init__(self)
-        self.tag = tag
-        self.info = info
-    
-    def __repr__(self):
-        base = Node.__repr__(self) 
-        return f"{base} : {self.tag}"
+        LineNode.__init__(self, [], tag, info)
 
 class JnxLineNode(Node):
     type='jnxLine'
