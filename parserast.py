@@ -19,7 +19,6 @@ precedence = (
 )
 
 # ---- BLOC AND LINES ----
-
 def p_document(p):
     ''' document : jinx_header bloc 
     | bloc'''
@@ -29,56 +28,90 @@ def p_document(p):
         p[0] = p[1]
 
 def p_bloc(p):
-    ''' bloc : line %prec TRANSFORM_NODE '''
+    ''' bloc : line %prec TRANSFORM_NODE 
+    | inline %prec TRANSFORM_NODE 
+    | line_jnx %prec TRANSFORM_NODE
+    | comment '''
     p[0] = ast.BlocNode(p[1])
 
 def p_bloc_multiple(p):
-    ''' bloc : bloc line '''
+    ''' bloc : bloc line
+    | bloc inline 
+    | bloc line_jnx '''
     p[0] = ast.BlocNode(p[1].children + [p[2]])
 
 def p_line(p):
     ''' line : balise_start token_sequence balise_end
-    | balise_start bloc balise_end 
-    | balise_autoclose
-    | comment '''
+    | balise_start bloc balise_end '''
     try :
-        p[0] = ast.LineNode([p[1], p[2], p[3]])
+        if p[1][0].tok != p[3][0].tok:
+            error_message(p, f"Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
+        
+        node = ast.LineNode(p[2], p[1][0].tok)
+        if len(p[1]) > 1:
+            node.info = p[1][1]
+
+        p[0] = node
     except IndexError:
         p[0] = p[1]
-    
+
+def p_line_jnx(p):
+    ''' line_jnx : balise_start_jnx token_sequence balise_end_jnx
+    | balise_start_jnx bloc balise_end_jnx '''
+
+    try :
+        if type(p[1]) != type(p[3]):
+            error_message(p, "Start and end JNX tag doesn't match !")
+        p[1].children.append(p[2])
+        p[0] = p[1]
+    except IndexError:
+        p[0] = p[1]
+
+def p_line_autoclose_jnx(p):
+    ''' line_jnx : balise_autoclose_jnx '''
+    p[0] = p[1]
+
+def p_inline(p):
+    ''' inline : balise_autoclose '''
+    tag = p[1].pop(0).tok
+    node = ast.InlineNode(tag)
+    if len(p[1]) > 0:
+        node.info = p[1][0]
+
+    p[0] = node
 # ---- BALISES ----
 
 def p_auto_balise(p):
     ''' balise_autoclose : tag "/" ">"
     | tag attributes "/" ">" '''
     if len(p) > 4:
-        p[0] = ast.LineNode([ast.BaliseStartNode([p[1], p[2]])])
+        p[0] = [p[1], p[2]]
     else:
-        p[0] = ast.LineNode([ast.BaliseStartNode(p[1])])
+        p[0] = [p[1]]
 
 def p_auto_balise_jnx(p):
-    ''' balise_autoclose : tag_jnx "/" ">"
+    ''' balise_autoclose_jnx : tag_jnx "/" ">"
     | tag_jnx attributes "/" ">" '''
     if len(p) > 4:
         [p[1].children.append(c) for c in p[2].children]
 
-    p[0] = ast.LineNode([ast.BaliseStartNode(p[1])])
+    p[0] = p[1]
 
 def p_balise_start(p):
     ''' balise_start : tag ">"
     | tag attributes ">"'''
     if len(p) > 3:
-        p[0] = ast.BaliseStartNode([p[1], p[2]])
+        p[0] = [p[1], p[2]]
     else :
-        p[0] = ast.BaliseStartNode(p[1])
+        p[0] = [p[1]]
 
 def p_balise_start_jnx(p):
-    ''' balise_start : tag_jnx ">"
+    ''' balise_start_jnx : tag_jnx ">"
     | tag_jnx attributes ">"'''
     if len(p) > 3:
         [p[1].children.append(c) for c in p[2].children]
 
-    p[0] = ast.BaliseStartNode(p[1])
+    p[0] = p[1]
 
 # TAGS : XML, JNX, JNX-Header
 def p_tag(p):
@@ -99,13 +132,13 @@ def p_jinx_header(p):
 
 def p_balise_end(p):
     ''' balise_end : "<" "/" token  ">" '''
-    p[0] = ast.BaliseEndNode(p[3])
+    p[0] = [p[3]]
 
 def p_balise_end_jinx(p):
-    ''' balise_end : "<" JNX_TAG_END '''
+    ''' balise_end_jnx : "<" JNX_TAG_END '''
     jinxWord = p[2].split(":")[-1].replace(">", "")
     try:
-        p[0] = ast.BaliseEndNode(jnxNodes[jinxWord]())
+        p[0] = jnxNodes[jinxWord]()
     except KeyError :
         error_message(p[1], f"{jinxWord} is not a know jinx word !")
 
@@ -125,7 +158,6 @@ def p_attributes_sequence(p):
 
 def p_attribute(p):
     ''' attribute : token "=" ATTRIB_VAL '''
-    p[3] = p[3][1:-1] # get ride of quotes
     p[0] = ast.AttributeNode([p[1], ast.TokenNode(p[3])])
 
 # ---- TOKENS AND STRINGS ---- 

@@ -1,5 +1,7 @@
 <?jnx version="1.0" encoding="UTF-8" ?>
 
+<!-- TEST -->
+
 <jnx:var name="test">
     <jnx:value>132</jnx:value>
     <jnx:value>112</jnx:value>
@@ -7,9 +9,11 @@
 </jnx:var>
 
 <marin id="12">
+<!-- TEST -->
     <nom>Surcouf</nom>
     <prenom>Robert</prenom>
-    <remarque  lang="FR">Capitaine corsaire</remarque>
+    <remarque lang="FR">Capitaine corsaire</remarque>
+    <img src="test" />
 
     <history-pieces>
         <jnx:foreach name="itVal" in="test">
@@ -25,7 +29,7 @@
                 <jnx:get name="it"/>
             </object>
         </jnx:for>
-        <jnx:for from="3" to="70" step="2" name="it2" >
+        <jnx:for from="3" to="4" step="2" name="it2" >
             <object>
                 <jnx:get name="it2"/>
             </object>

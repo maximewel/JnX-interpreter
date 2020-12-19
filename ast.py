@@ -77,14 +77,30 @@ class InfoNode(Node):
 class AttributeNode(Node):
     type = '='
     
-class BaliseStartNode(Node):
-    type = 'start'
-
-class BaliseEndNode(Node):
-    type = 'end'
-
 class LineNode(Node):
     type='line'
+    def __init__(self, nodes, tag, info=None):
+        Node.__init__(self, nodes)
+        self.tag = tag
+        self.info = info
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base} : {self.tag}"
+
+class InlineNode(Node):
+    type='inline'
+    def __init__(self, tag, info=None):
+        Node.__init__(self)
+        self.tag = tag
+        self.info = info
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base} : {self.tag}"
+
+class JnxLineNode(Node):
+    type='jnxLine'
 
 class BlocNode(Node):
     type='bloc'
