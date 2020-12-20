@@ -2,7 +2,7 @@
 The JnX ! Interpreter is a XML++ (maybe even XML# !) interpreter. Its purpose is to add some structure control to XML documents (for and foreach)\
 JnX means Jnx is the New XML
 
-## JnX synthaxe
+## JnX syntaxe
 JnX is a layer above XML. It's purpose is to facilitate XML writing by automatising template generation using predetermined data.\
 Let's say you have a pirate. You have the list of his purses values, and you want to put them in the pirate.\
 First, you declare your attributes in a "var" jnx block :
@@ -49,4 +49,4 @@ Jinx throw compilation errors when :
 * Trying to do a "get" on an invalid var
 
 ## JnX utilisation
-TODO when we have worked :-)
+see userguide

@@ -51,7 +51,7 @@ def interpret(self):
         output += self.info.interpret()
     output += ">\n"
     countLines += 1
-    output += "\t"*0 + interpretChildren(self)
+    output += interpretChildren(self)
     countLines -= 1
     output += "\t"*countLines + f"</{self.tag}>\n"
 

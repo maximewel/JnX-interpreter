@@ -58,7 +58,6 @@ def p_line(p):
 def p_line_jnx(p):
     ''' line_jnx : balise_start_jnx token_sequence balise_end_jnx
     | balise_start_jnx bloc balise_end_jnx '''
-
     try :
         if type(p[1]) != type(p[3]):
             error_message(p, "Start and end JNX tag doesn't match !")
