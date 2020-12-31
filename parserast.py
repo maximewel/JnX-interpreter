@@ -6,12 +6,51 @@ import os
 from lex import tokens
 import ast
 
+def getValFromAttributeName(nodes, name, default=None):
+    attrib = getAttributeFromAttributeName(nodes, name)
+
+    if attrib is None:
+        return default
+
+    return attrib.children[1].tok[1:-1] # get ride of quotes
+
+def getAttributeFromAttributeName(nodes, name):
+    for child in nodes.children:
+        if type(child) is ast.AttributeNode:
+            if child.children[0].tok == name:
+                return child
+    return None # replace by an error ?
+
+def JnxForeach(p):
+    attribs = p[1][1]
+    collectionName = getValFromAttributeName(attribs, "in")
+    itName = getValFromAttributeName(attribs, "name")
+
+    #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
+
+    foreachNode = ast.JnxForeachNode(p[2], itName, collectionName)
+
+    return foreachNode
+
+def JnxFor(p):
+    attribs = p[1][1]
+    start = int(getValFromAttributeName(attribs, "from"))
+    to = int(getValFromAttributeName(attribs, "to"))
+    step = int(getValFromAttributeName(attribs, "step", "1"))
+    itName = getValFromAttributeName(attribs, "name", "it")
+
+    #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
+
+    forNode = ast.JnxForNode(p[2], start, to, step, itName)
+
+    return forNode
+
 jnxNodes = {
-    'get' : lambda: ast.JnxGetNode(),
-    'var' : lambda: ast.JnxVarNode(),
-    'foreach' : lambda: ast.JnxForeachNode(),
-    'value' : lambda: ast.JnxValueNode(),
-    'for' : lambda: ast.JnxForNode(),
+    'get' : lambda p: ast.JnxGetNode(),
+    'var' : lambda p: ast.JnxVarNode(),
+    'foreach' : JnxForeach,
+    'value' : lambda p: ast.JnxValueNode(),
+    'for' : JnxFor,
 }
 
 precedence = (
@@ -59,9 +98,16 @@ def p_line_jnx(p):
     ''' line_jnx : balise_start_jnx token_sequence balise_end_jnx
     | balise_start_jnx bloc balise_end_jnx '''
     try :
-        if type(p[1]) != type(p[3]):
-            error_message(p, "Start and end JNX tag doesn't match !")
-        p[1].children.append(p[2])
+        if p[1][0] != p[3]:
+             error_message(p, f"Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
+        
+        jinxWord = p[1][0]
+        
+        try:
+            p[1] = jnxNodes[jinxWord](p)
+        except KeyError :
+            error_message(p[1], f"{jinxWord} is not a know jinx word !")
+
         p[0] = p[1]
     except IndexError:
         p[0] = p[1]
@@ -78,8 +124,8 @@ def p_inline(p):
         node.info = p[1][0]
 
     p[0] = node
+    
 # ---- BALISES ----
-
 def p_auto_balise(p):
     ''' balise_autoclose : tag "/" ">"
     | tag attributes "/" ">" '''
@@ -91,10 +137,7 @@ def p_auto_balise(p):
 def p_auto_balise_jnx(p):
     ''' balise_autoclose_jnx : tag_jnx "/" ">"
     | tag_jnx attributes "/" ">" '''
-    if len(p) > 4:
-        [p[1].children.append(c) for c in p[2].children]
-
-    p[0] = p[1]
+    p[0] = jnxNodes[p[1]](p)
 
 def p_balise_start(p):
     ''' balise_start : tag ">"
@@ -108,9 +151,9 @@ def p_balise_start_jnx(p):
     ''' balise_start_jnx : tag_jnx ">"
     | tag_jnx attributes ">"'''
     if len(p) > 3:
-        [p[1].children.append(c) for c in p[2].children]
-
-    p[0] = p[1]
+        p[0] = [p[1], p[2]]
+    else:
+        p[0] = [p[1]]
 
 # TAGS : XML, JNX, JNX-Header
 def p_tag(p):
@@ -120,10 +163,7 @@ def p_tag(p):
 def p_tag_jinx(p):
     ''' tag_jnx : JNX_TAG_START '''
     jinxWord = p[1].split(":")[-1]
-    try:
-        p[0] = jnxNodes[jinxWord]()
-    except KeyError :
-        error_message(p[1], f"{jinxWord} is not a know jinx word !")
+    p[0] = jinxWord
 
 def p_jinx_header(p):
     ''' jinx_header : JNX_TAG_HEADER_START attributes JNX_TAG_HEADER_END'''
@@ -136,10 +176,7 @@ def p_balise_end(p):
 def p_balise_end_jinx(p):
     ''' balise_end_jnx : "<" JNX_TAG_END '''
     jinxWord = p[2].split(":")[-1].replace(">", "")
-    try:
-        p[0] = jnxNodes[jinxWord]()
-    except KeyError :
-        error_message(p[1], f"{jinxWord} is not a know jinx word !")
+    p[0] = jinxWord
 
 def p_comment(p):
     ''' comment : COMMENT '''

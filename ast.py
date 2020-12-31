@@ -110,12 +110,30 @@ class JnxVarNode(Node):
 
 class JnxForeachNode(Node):
     type='foreach'
+    def __init__(self, nodes, itName, collecName):
+        Node.__init__(self, nodes)
+        self.itName = itName
+        self.collecName = collecName
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base}({self.itName} in {self.collecName})"
 
 class JnxValueNode(Node):
     type='value'
 
 class JnxForNode(Node):
     type='for'
+    def __init__(self, nodes, start, to, step, itName):
+        Node.__init__(self, nodes)
+        self.start = start
+        self.to = to
+        self.step=step
+        self.itName = itName
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base}({self.start} to {self.to} by {self.step})"
 
 class CommentNode(Node):
     type = 'comment'

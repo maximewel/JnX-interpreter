@@ -136,26 +136,20 @@ def interpret(self):
 @addToClass(ast.JnxForeachNode)
 def interpret(self):
     output = ""
-    collectionName = getValFromAttributeName(self, "in")
-    itName = getValFromAttributeName(self, "name")
 
-    for it in vars[collectionName]:
-        vars[itName] = it
-        output += self.children[-1].interpret()
+    for it in vars[self.collecName]:
+        vars[self.itName] = it
+        output += interpretChildren(self)
 
     return output
 
 @addToClass(ast.JnxForNode)
 def interpret(self):
     output = ""
-    start = int(getValFromAttributeName(self, "from"))
-    to = int(getValFromAttributeName(self, "to"))
-    step = int(getValFromAttributeName(self, "step", "1"))
-    itName = getValFromAttributeName(self, "name", "it")
 
-    for it in range(start, to, step):
-        vars[itName] = it
-        output += self.children[-1].interpret()
+    for it in range(self.start, self.to, self.step):
+        vars[self.itName] = it
+        output += interpretChildren(self)
 
     return output
 
