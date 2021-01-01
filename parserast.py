@@ -28,9 +28,8 @@ def JnxForeach(p):
 
     #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
 
-    foreachNode = ast.JnxForeachNode(p[2], itName, collectionName)
+    return ast.JnxForeachNode(p[2], itName, collectionName)
 
-    return foreachNode
 
 def JnxFor(p):
     attribs = p[1][1]
@@ -41,15 +40,31 @@ def JnxFor(p):
 
     #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
 
-    forNode = ast.JnxForNode(p[2], start, to, step, itName)
+    return ast.JnxForNode(p[2], start, to, step, itName)
 
-    return forNode
+def JnxGet(p):
+    attribs = p[2]
+    name = getValFromAttributeName(attribs, "name")
+
+    return ast.JnxGetNode(name)
+
+def JnxVar(p):
+    attribs = p[1][1]
+    name = getValFromAttributeName(attribs, "name")
+    node = ast.JnxVarNode(p[2], name)
+
+    return node
+
+def JnxValue(p):
+    value = p[2].tok
+
+    return ast.JnxValueNode(value)
 
 jnxNodes = {
-    'get' : lambda p: ast.JnxGetNode(),
-    'var' : lambda p: ast.JnxVarNode(),
+    'get' : JnxGet,
+    'var' : JnxVar,
     'foreach' : JnxForeach,
-    'value' : lambda p: ast.JnxValueNode(),
+    'value' : JnxValue,
     'for' : JnxFor,
 }
 
@@ -62,7 +77,7 @@ def p_document(p):
     ''' document : jinx_header bloc 
     | bloc'''
     try:
-        p[0] = ast.BlocNode([p[1]] + p[2].children)
+        p[0] = ast.DocumentNode([p[1]] + p[2])
     except:
         p[0] = p[1]
 
@@ -71,13 +86,14 @@ def p_bloc(p):
     | inline %prec TRANSFORM_NODE 
     | line_jnx %prec TRANSFORM_NODE
     | comment '''
-    p[0] = ast.BlocNode(p[1])
+    p[0] = [p[1]]
 
 def p_bloc_multiple(p):
     ''' bloc : bloc line
     | bloc inline 
     | bloc line_jnx '''
-    p[0] = ast.BlocNode(p[1].children + [p[2]])
+    p[1].append(p[2])
+    p[0] = p[1]
 
 def p_line(p):
     ''' line : balise_start token_sequence balise_end
@@ -85,8 +101,8 @@ def p_line(p):
     try :
         if p[1][0].tok != p[3][0].tok:
             error_message(p, f"Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
-        
-        node = ast.LineNode(p[2], p[1][0].tok)
+
+        node = ast.BlocNode(p[2], p[1][0].tok)
         if len(p[1]) > 1:
             node.info = p[1][1]
 

@@ -14,12 +14,9 @@ lastVar = None
 countLines = 0
 
 """ --- Nodes gestion ---"""
-
-"""         ---- XML-Structure-Nodes ----
+"""         ---- XML-Nodes ----
 DocumentNode
 BlocNode
-""" """     ---- LINES-Nodes ----
-LineNode
 InlineNode
 AttributeNode
 CommentNode
@@ -43,7 +40,7 @@ def interpret(self):
     print("Analysing document...")
     return interpretChildren(self)
 
-@addToClass(ast.LineNode)
+@addToClass(ast.BlocNode)
 def interpret(self):
     global countLines
     output = "\t"*countLines + f"<{self.tag}"
@@ -72,10 +69,6 @@ def interpret(self):
 
     return output
 
-@addToClass(ast.BlocNode)
-def interpret(self):
-    return interpretChildren(self)
-
 @addToClass(ast.CommentNode)
 def interpret(self):
     global countLines
@@ -92,45 +85,29 @@ def interpret(self):
     return f" {self.children[0].tok}={self.children[1].tok}"
 
 """  ---- JINX-NODES ----   """
-def getValFromAttributeName(node, name, default=None):
-    attrib = getAttributeFromAttributeName(node, name)
-
-    if attrib is None:
-        return default
-
-    return attrib.children[1].tok[1:-1] # get ride of quotes
-
-def getAttributeFromAttributeName(node, name):
-    for child in node.children:
-        if type(child) is ast.AttributeNode:
-            if child.children[0].tok == name:
-                return child
-    return None # replace by an error ?
-
 @addToClass(ast.JnxGetNode)
 def interpret(self):
-    value = getValFromAttributeName(self, "name")
+    value = self.name
     return "\t"*countLines + str(vars[value]) + "\n"
 
 @addToClass(ast.JnxVarNode)
 def interpret(self):
     global lastVar
-    name = getValFromAttributeName(self, "name")
+    name = self.name
     vars[name] = []
     lastVar = name
     output = ""
 
-    if type(self.children[-1]) is ast.BlocNode and len(self.children[-1].children):
-        for c in self.children[-1].children:
+    if len(self.children):
+        for c in self.children:
             output += c.interpret()
 
     return output
 
-
 @addToClass(ast.JnxValueNode)
 def interpret(self):
     global lastVar
-    vars[lastVar].append(self.children[0].tok)
+    vars[lastVar].append(self.value)
     return ""
 
 @addToClass(ast.JnxForeachNode)

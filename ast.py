@@ -77,8 +77,8 @@ class InfoNode(Node):
 class AttributeNode(Node):
     type = '='
     
-class LineNode(Node):
-    type='line'
+class BlocNode(Node):
+    type='bloc'
     def __init__(self, nodes, tag, info=None):
         Node.__init__(self, nodes)
         self.tag = tag
@@ -88,28 +88,38 @@ class LineNode(Node):
         base = Node.__repr__(self) 
         return f"{base} : {self.tag}"
 
-class InlineNode(LineNode):
+class InlineNode(BlocNode):
     type='inline'
     def __init__(self, tag, info=None):
-        LineNode.__init__(self, [], tag, info)
+        BlocNode.__init__(self, [], tag, info)
 
 class JnxLineNode(Node):
     type='jnxLine'
-
-class BlocNode(Node):
-    type='bloc'
 
 class JnxHeader(Node):
     type='header'
 
 class JnxGetNode(Node):
-    type='get'
+    type='jnx:get'
+    def __init__(self, name):
+        Node.__init__(self, None)
+        self.name = name
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base}({self.name})"
 
 class JnxVarNode(Node):
-    type='var'
-
+    type='jnx:var'
+    def __init__(self, children, name):
+        Node.__init__(self, children)
+        self.name = name
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base}({self.name})"
 class JnxForeachNode(Node):
-    type='foreach'
+    type='jnx:foreach'
     def __init__(self, nodes, itName, collecName):
         Node.__init__(self, nodes)
         self.itName = itName
@@ -120,10 +130,17 @@ class JnxForeachNode(Node):
         return f"{base}({self.itName} in {self.collecName})"
 
 class JnxValueNode(Node):
-    type='value'
+    type='jnx:value'
+    def __init__(self, value):
+        Node.__init__(self, None)
+        self.value = value
+    
+    def __repr__(self):
+        base = Node.__repr__(self) 
+        return f"{base}({self.value})"
 
 class JnxForNode(Node):
-    type='for'
+    type='jnx:for'
     def __init__(self, nodes, start, to, step, itName):
         Node.__init__(self, nodes)
         self.start = start
