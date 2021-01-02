@@ -1,3 +1,11 @@
+''' 
+    TODO : Description
+
+    JNX-Interpreter
+    He-arc 2020, INF-DLMb
+    Maxime Welcklen & Steve Mendes Reis
+'''
+
 import ply.lex as lex
 import sys
 import os

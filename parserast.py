@@ -1,3 +1,14 @@
+''' 
+    Ce module permet de parser les fichiers de type JNX
+
+    Il permet aussi de frabriquer ("coudre") un arbre pour avoir
+    une représentation de notre arbre syntaxique
+
+    JNX-Interpreter
+    He-arc 2020, INF-DLMb
+    Maxime Welcklen & Steve Mendes Reis
+'''
+
 import ply.lex as lex
 import ply.yacc as yacc
 import sys
@@ -7,6 +18,10 @@ from lex import tokens
 import ast
 
 def getValFromAttributeName(nodes, name, default=None):
+    '''
+        Helper function to retrieve attribute's value based on a name
+        If the attribute does not exist it will return 'default' parameter 
+    '''
     attrib = getAttributeFromAttributeName(nodes, name)
 
     if attrib is None:
@@ -15,6 +30,7 @@ def getValFromAttributeName(nodes, name, default=None):
     return attrib.children[1].tok[1:-1] # get ride of quotes
 
 def getAttributeFromAttributeName(nodes, name):
+    ''' Helper function to retrieve attribute based on a name '''
     for child in nodes.children:
         if type(child) is ast.AttributeNode:
             if child.children[0].tok == name:
@@ -24,21 +40,24 @@ def getAttributeFromAttributeName(nodes, name):
 def JnxForeach(p):
     attribs = p[1][1]
     collectionName = getValFromAttributeName(attribs, "in")
-    itName = getValFromAttributeName(attribs, "name")
+    itName = getValFromAttributeName(attribs, "name", "it")
 
-    #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
+    if collectionName is None:
+        error_message(p,"jnx:for is missing collection parameter !")
 
     return ast.JnxForeachNode(p[2], itName, collectionName)
 
-
 def JnxFor(p):
     attribs = p[1][1]
-    start = int(getValFromAttributeName(attribs, "from"))
-    to = int(getValFromAttributeName(attribs, "to"))
+    start = getValFromAttributeName(attribs, "from")
+    to = getValFromAttributeName(attribs, "to")
     step = int(getValFromAttributeName(attribs, "step", "1"))
     itName = getValFromAttributeName(attribs, "name", "it")
 
-    #TODO si un paramètre n'est pas valide ou p[2] vide, throw error
+    if start is None or to is None:
+        error_message(p,"jnx:for is missing either 'from' or 'to' parameter !")
+
+    start = int(start); to = int(to) #convert to int as we receive str parameter
 
     return ast.JnxForNode(p[2], start, to, step, itName)
 
@@ -46,11 +65,18 @@ def JnxGet(p):
     attribs = p[2]
     name = getValFromAttributeName(attribs, "name")
 
+    if name is None:
+        error_message(p,"jnx:get is missing 'name' parameter !")
+
     return ast.JnxGetNode(name)
 
 def JnxVar(p):
     attribs = p[1][1]
     name = getValFromAttributeName(attribs, "name")
+
+    if name is None:
+        error_message(p,"jnx:var is missing 'name' parameter !")
+
     node = ast.JnxVarNode(p[2], name)
 
     return node
@@ -86,80 +112,65 @@ def p_bloc(p):
     | inline %prec TRANSFORM_NODE 
     | line_jnx %prec TRANSFORM_NODE
     | comment '''
-    p[0] = [p[1]]
+    p[0] = [p[1]] # Starting a nodes' list
 
 def p_bloc_multiple(p):
     ''' bloc : bloc line
     | bloc inline 
     | bloc line_jnx '''
-    p[1].append(p[2])
+    p[1].append(p[2]) # a bloc is a nodes' list, so here we basically add a new node to the list
     p[0] = p[1]
 
 def p_line(p):
     ''' line : balise_start token_sequence balise_end
     | balise_start bloc balise_end '''
-    try :
-        if p[1][0].tok != p[3][0].tok:
-            error_message(p, f"Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
+    if p[1][0].tok != p[3][0].tok: # ensure that start and end tag match 
+        error_message(p, f"Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
 
-        node = ast.BlocNode(p[2], p[1][0].tok)
-        if len(p[1]) > 1:
-            node.info = p[1][1]
+    node = ast.BlocNode(p[2], p[1][0].tok) # we create a bloc for the specified tag
 
-        p[0] = node
-    except IndexError:
-        p[0] = p[1]
+    if len(p[1]) > 1:
+        node.info = p[1][1] # we set attributes for the tag
+
+    p[0] = node
 
 def p_line_jnx(p):
     ''' line_jnx : balise_start_jnx token_sequence balise_end_jnx
     | balise_start_jnx bloc balise_end_jnx '''
-    try :
-        if p[1][0] != p[3]:
-             error_message(p, f"Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
-        
-        jinxWord = p[1][0]
-        
-        try:
-            p[1] = jnxNodes[jinxWord](p)
-        except KeyError :
-            error_message(p[1], f"{jinxWord} is not a know jinx word !")
-
-        p[0] = p[1]
+    
+    if p[1][0] != p[3]: # ensure that start and end tag match 
+        error_message(p, f"Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
+    
+    jinxWord = p[1][0] # retrieving the jinxword to call the correct object constructor
+    
+    try:
+        p[1] = jnxNodes[jinxWord](p) # creating the node needed
     except IndexError:
-        p[0] = p[1]
+        error_message(p, f"{jinxWord} is not a know jinx word !") # if node name doesn't exist we throw an error 
 
-def p_line_autoclose_jnx(p):
-    ''' line_jnx : balise_autoclose_jnx '''
     p[0] = p[1]
-
-def p_inline(p):
-    ''' inline : balise_autoclose '''
-    tag = p[1].pop(0).tok
-    node = ast.InlineNode(tag)
-    if len(p[1]) > 0:
-        node.info = p[1][0]
-
-    p[0] = node
     
 # ---- BALISES ----
 def p_auto_balise(p):
-    ''' balise_autoclose : tag "/" ">"
+    ''' inline : tag "/" ">"
     | tag attributes "/" ">" '''
+    node = ast.InlineNode(p[1].tok) # inline tag so we directly create inline node
+
     if len(p) > 4:
-        p[0] = [p[1], p[2]]
-    else:
-        p[0] = [p[1]]
+        node.info = p[2] # add attributs if there is any
+    
+    p[0] = node
 
 def p_auto_balise_jnx(p):
-    ''' balise_autoclose_jnx : tag_jnx "/" ">"
+    ''' line_jnx : tag_jnx "/" ">"
     | tag_jnx attributes "/" ">" '''
-    p[0] = jnxNodes[p[1]](p)
+    p[0] = jnxNodes[p[1]](p) # autoclose jnx tag, we directly create jnx node
 
 def p_balise_start(p):
     ''' balise_start : tag ">"
     | tag attributes ">"'''
-    if len(p) > 3:
-        p[0] = [p[1], p[2]]
+    if len(p) > 3: 
+        p[0] = [p[1], p[2]] # if there is attributes
     else :
         p[0] = [p[1]]
 
@@ -167,7 +178,7 @@ def p_balise_start_jnx(p):
     ''' balise_start_jnx : tag_jnx ">"
     | tag_jnx attributes ">"'''
     if len(p) > 3:
-        p[0] = [p[1], p[2]]
+        p[0] = [p[1], p[2]] # if there is attributes
     else:
         p[0] = [p[1]]
 
@@ -231,6 +242,7 @@ def p_token_sequence(p):
 def error_message(p, message):
     print(f"Error message : {message}")
     p_error(p)
+    exit()
 
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))

@@ -1,13 +1,10 @@
-# coding: latin-1
+''' 
+    Petit module utilitaire pour la construction, la manipulation et la 
+    représentation d'arbres syntaxiques abstraits.
 
-''' Petit module utilitaire pour la construction, la manipulation et la 
-repr�sentation d'arbres syntaxiques abstraits.
-
-S�rement plein de bugs et autres surprises. � prendre comme un 
-"work in progress"...
-Notamment, l'utilisation de pydot pour repr�senter un arbre syntaxique cousu
-est une utilisation un peu "limite" de graphviz. �a marche, mais le layout n'est
-pas toujours optimal...
+    JNX-Interpreter
+    He-arc 2020, INF-DLMb
+    Maxime Welcklen & Steve Mendes Reis
 '''
 
 import pydot
@@ -162,16 +159,16 @@ class CommentNode(Node):
         return repr("comment : " + self.comment)
     
 def addToClass(cls):
-    ''' D�corateur permettant d'ajouter la fonction d�cor�e en tant que m�thode
-    � une classe.
+    ''' Décorateur permettant d'ajouter la fonction décorée en tant que méthode
+    à une classe.
     
-    Permet d'impl�menter une forme �l�mentaire de programmation orient�e
-    aspects en regroupant les m�thodes de diff�rentes classes impl�mentant
-    une m�me fonctionnalit� en un seul endroit.
+    Permet d'implémenter une forme élémentaire de programmation orientée
+    aspects en regroupant les méthodes de différentes classes implémentant
+    une même fonctionnalité en un seul endroit.
     
-    Attention, apr�s utilisation de ce d�corateur, la fonction d�cor�e reste dans
-    le namespace courant. Si cela d�range, on peut utiliser del pour la d�truire.
-    Je ne sais pas s'il existe un moyen d'�viter ce ph�nom�ne.
+    Attention, après utilisation de ce décorateur, la fonction décorée reste dans
+    le namespace courant. Si cela dérange, on peut utiliser del pour la détruire.
+    Je ne sais pas s'il existe un moyen d'éviter ce phénomène.
     '''
     def decorator(func):
         setattr(cls,func.__name__,func)
