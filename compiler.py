@@ -152,8 +152,7 @@ def interpret(self):
     for it in vars[self.collecName]:
         vars[self.itName] = it
         output += interpretChildren(self)
-
-    del vars[self.itName] # cleaning as var is no more in the scope
+        del vars[self.itName] # cleaning as var is no more in the scope
 
     return output
 
@@ -171,8 +170,7 @@ def interpret(self):
     for it in range(self.start, self.to, self.step):
         vars[self.itName] = it
         output += interpretChildren(self)
-    
-    del vars[self.itName] # cleaning as var is no more in the scope
+        del vars[self.itName] # cleaning as var is no more in the scope
 
     return output
 

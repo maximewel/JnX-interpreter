@@ -59,6 +59,11 @@ def JnxFor(p):
 
     start = int(start); to = int(to) #convert to int as we receive str parameter
 
+    # semantic verification 
+    sem = ((to - start)/step)
+    if sem < 0:
+        error_message(p, f"For loop with values start={start}, to={to} and step={step} may endup in an infinite loop !")
+
     return ast.JnxForNode(p[2], start, to, step, itName)
 
 def JnxGet(p):
@@ -242,7 +247,6 @@ def p_token_sequence(p):
 def error_message(p, message):
     print(f"Error message : {message}")
     p_error(p)
-    exit()
 
 def p_error(p) :
     print("syntax error in line {}".format(p.lineno))
