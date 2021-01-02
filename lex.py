@@ -1,5 +1,5 @@
 ''' 
-    TODO : Description
+    Ce module concerne la partie lexicale de l'interpreteur
 
     JNX-Interpreter
     He-arc 2020, INF-DLMb
