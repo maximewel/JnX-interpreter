@@ -11,11 +11,11 @@
     <prenom>jnx-get</prenom>
     <remarque lang="FR">Capitaine corsaire</remarque>
 
-    <history-object>
-        <jnx:for from="1" to="4" step="2" name="it" >
-            <object>
-                <jnx:get name="it"/>
-            </object>
-        </jnx:for>
-    </history-object>
+    <history-pieces>
+        <jnx:foreach name="itVal" in="test">
+            <pieces>
+                <jnx:get name="itVal"/>
+            </pieces>
+        </jnx:foreach>
+    </history-pieces>
 </marin>
