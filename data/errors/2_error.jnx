@@ -1,0 +1,7 @@
+<?jnx version="1.0" encoding="UTF-8" ?>
+
+<marin id="12">
+    <history-pieces>
+        <jnx:get name="itVal"/>
+    </history-pieces>
+</marin>

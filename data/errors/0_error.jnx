@@ -1,0 +1,17 @@
+<?jnx version="1.0" encoding="UTF-8" ?>
+
+<jnx:var name="test">
+    <jnx:value>132</jnx:value>
+    <jnx:value>112</jnx:value>
+    <jnx:value>12</jnx:value>
+</jnx:var>
+
+<marin id="12">
+    <history-pieces>
+        <jnx:foreach name="itVal" in="test">
+            <pieces>
+                <jnx:get name="itVal"/>
+            </pieces>
+        </jnx:foreach>
+    history-pieces>
+</marin>

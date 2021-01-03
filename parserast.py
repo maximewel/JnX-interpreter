@@ -115,7 +115,7 @@ def p_document(p):
     try:
         p[0] = ast.DocumentNode([p[1]] + p[2])
     except:
-        p[0] = p[1]
+        p[0] = ast.DocumentNode(p[1])
 
 def p_bloc(p):
     ''' bloc : line %prec TRANSFORM_NODE 
@@ -135,7 +135,7 @@ def p_line(p):
     ''' line : balise_start token_sequence balise_end
     | balise_start bloc balise_end '''
     if p[1][0].tok != p[3][0].tok: # ensure that start and end tag match 
-        error_message(p, f"semantic : Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
+        error_message(p, f"syntax : Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
 
     node = ast.BlocNode(p[2], p[1][0].tok) # we create a bloc for the specified tag
 
@@ -149,7 +149,7 @@ def p_line_jnx(p):
     | balise_start_jnx bloc balise_end_jnx '''
     
     if p[1][0] != p[3]: # ensure that start and end tag match 
-        error_message(p, f"semantic : Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
+        error_message(p, f"syntax : Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
     
     jinxWord = p[1][0] # retrieving the jinxword to call the correct object constructor
     
@@ -251,6 +251,11 @@ def p_token_sequence(p):
 
 def error_message(p, message):
     print(f"Error message : {message}")
+    p_error(p)
+    exit()
+
+def warning_message(p, message):
+    print(f"Warning message : {message}")
     p_error(p)
 
 def p_error(p) :
