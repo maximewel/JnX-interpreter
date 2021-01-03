@@ -1,5 +1,11 @@
 <?jnx version="1.0" encoding="UTF-8" ?>
 
+<jnx:var name="test">
+    <jnx:value>a</jnx:value>
+    <jnx:value>b</jnx:value>
+    <jnx:value>c</jnx:value>
+</jnx:var>
+
 <marin id="12">
 <!-- TEST -->
     <nom>Surcouf</nom>
@@ -9,14 +15,11 @@
 
     <history-object>
         <jnx:for from="1" to="4" step="2" name="it" >
-            <object>
-                <jnx:get name="it"/>
-            </object>
-        </jnx:for>
-        <jnx:for from="10" to="11" step="2" name="it2" >
-            <object>
-                <jnx:get name="it2"/>
-            </object>
+            <jnx:foreach in="test" name="it2" >
+                <object>
+                     <jnx:get name="it"/><jnx:get name="it2"/>
+                </object>
+            </jnx:foreach>
         </jnx:for>
     </history-object>
 </marin>
