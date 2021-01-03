@@ -43,7 +43,7 @@ def JnxForeach(p):
     itName = getValFromAttributeName(attribs, "name", "it")
 
     if collectionName is None:
-        error_message(p,"jnx:for is missing collection parameter !")
+        error_message(p,"syntax : jnx:for is missing collection parameter !")
 
     return ast.JnxForeachNode(p[2], itName, collectionName)
 
@@ -54,20 +54,20 @@ def JnxFor(p):
     step = getValFromAttributeName(attribs, "step", "1")
     itName = getValFromAttributeName(attribs, "name", "it")
     if start is None or to is None:
-        error_message(p,"jnx:for is missing either 'from' or 'to' parameter !")
+        error_message(p,"syntax : jnx:for is missing either 'from' or 'to' parameter !")
 
     try:
         start = int(start); to = int(to); step = int(step) #convert to int as we receive str parameter
     except ValueError:
-        error_message(p, "jnx:for parameter from, to or step should be integers !")
+        error_message(p, "semantic : jnx:for parameter from, to or step should be integers !")
 
     if step == 0:
-        error_message(p, "jnx:for steps cannot be zero !")
+        error_message(p, "semantic : jnx:for steps cannot be zero !")
 
     # semantic verification, is loop correct ? 
     sem = ((to - start)/step)
     if sem < 0:
-        error_message(p, f"For loop with values start={start}, to={to} and step={step} may endup in an infinite loop !")
+        error_message(p, f"semantic : For loop with values start={start}, to={to} and step={step} may endup in an infinite loop !")
 
     return ast.JnxForNode(p[2], start, to, step, itName)
 
@@ -76,7 +76,7 @@ def JnxGet(p):
     name = getValFromAttributeName(attribs, "name")
 
     if name is None:
-        error_message(p,"jnx:get is missing 'name' parameter !")
+        error_message(p,"syntax : jnx:get is missing 'name' parameter !")
 
     return ast.JnxGetNode(name)
 
@@ -85,7 +85,7 @@ def JnxVar(p):
     name = getValFromAttributeName(attribs, "name")
 
     if name is None:
-        error_message(p,"jnx:var is missing 'name' parameter !")
+        error_message(p,"syntax : jnx:var is missing 'name' parameter !")
 
     node = ast.JnxVarNode(p[2], name)
 
@@ -135,7 +135,7 @@ def p_line(p):
     ''' line : balise_start token_sequence balise_end
     | balise_start bloc balise_end '''
     if p[1][0].tok != p[3][0].tok: # ensure that start and end tag match 
-        error_message(p, f"Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
+        error_message(p, f"semantic : Start and end tag doesn't match : {p[1][0].tok} != {p[3][0].tok}")
 
     node = ast.BlocNode(p[2], p[1][0].tok) # we create a bloc for the specified tag
 
@@ -149,7 +149,7 @@ def p_line_jnx(p):
     | balise_start_jnx bloc balise_end_jnx '''
     
     if p[1][0] != p[3]: # ensure that start and end tag match 
-        error_message(p, f"Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
+        error_message(p, f"semantic : Start and end JNX tag doesn't match : {p[1][0]} != {p[3]}")
     
     jinxWord = p[1][0] # retrieving the jinxword to call the correct object constructor
     

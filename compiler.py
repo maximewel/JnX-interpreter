@@ -19,7 +19,7 @@ import os
 ''' --- init variables --- '''
 vars = {} # track variables key=value
 stackVars = []
-countLines = 0 # it allows to keep track tabulation, to correctly format output
+countBloc = 0 # it allows to keep track tabulation, to correctly format output
 
 ''' --- Nodes gestion --- '''
 
@@ -50,28 +50,28 @@ def interpret(self):
 @addToClass(ast.BlocNode)
 def interpret(self):
     ''' Bloc node is excepted to output something like <tag [attributs]>content</tag> '''
-    global countLines # is used to track tabulation for formatting
-    output = "\t"*countLines + f"<{self.tag}"
+    global countBloc # is used to track tabulation for formatting
+    output = "\t"*countBloc + f"<{self.tag}"
     if self.info:
         output += self.info.interpret() # we interpret all tags' attributes
     output += ">\n"
-    countLines += 1
+    countBloc += 1
     output += interpretChildren(self)
-    countLines -= 1
-    output += "\t"*countLines + f"</{self.tag}>\n"
+    countBloc -= 1
+    output += "\t"*countBloc + f"</{self.tag}>\n"
 
     return output
 
 @addToClass(ast.TokenNode)
 def interpret(self):
-    global countLines
-    return "\t"*countLines + self.tok + "\n"
+    global countBloc
+    return "\t"*countBloc + self.tok + "\n"
 
 @addToClass(ast.InlineNode)
 def interpret(self):
     ''' Simple autoclose tags <tag attribs />'''
-    global countLines
-    output = "\t"*countLines + f"<{self.tag}"
+    global countBloc
+    output = "\t"*countBloc + f"<{self.tag}"
     if self.info:
         output += self.info.interpret()
     output += "/>\n"
@@ -81,8 +81,8 @@ def interpret(self):
 @addToClass(ast.CommentNode)
 def interpret(self):
     ''' Comment section produce <!-- COMMENT -->'''
-    global countLines
-    return "\t"*countLines + f"<!-- {self.comment} -->\n"
+    global countBloc
+    return "\t"*countBloc + f"<!-- {self.comment} -->\n"
 
 @addToClass(ast.InfoNode)
 def interpret(self):
@@ -101,7 +101,7 @@ def interpret(self):
     name = self.name
     output = ""
     try: 
-        output = "\t"*countLines + str(vars[name]) + "\n"
+        output = "\t"*countBloc + str(vars[name]) + "\n"
     except:
         error_message(f"variable '{name}' does not exist !")
         

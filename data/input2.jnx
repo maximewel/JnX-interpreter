@@ -3,7 +3,6 @@
 <!-- TEST -->
 
 <jnx:var name="test">
-    <!-- TEST -->
     <jnx:value>132</jnx:value>
     <jnx:value>112</jnx:value>
     <jnx:value>12</jnx:value>
