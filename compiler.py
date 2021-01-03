@@ -1,6 +1,6 @@
 ''' 
-    Ce module permet la compilation de fichier JNX qui donne,
-    après compilation, un nouveau fichier de type XML
+    Ce module permet l'interprétation de fichier JNX qui donne,
+    après interprétation, un nouveau fichier de type XML
 
     JNX-Interpreter
     He-arc 2020, INF-DLMb
@@ -17,15 +17,17 @@ import os
 # pylint: disable=function-redefined
 
 ''' --- init variables --- '''
-vars = {} # track variables
-currentVar = None
+vars = {} # track variables key=value
+stackVars = []
 countLines = 0 # it allows to keep track tabulation, to correctly format output
 
 ''' --- Nodes gestion --- '''
 
 def interpretList(elements):
-    ''' Util function to interpret all childrens and merge them
-        into one string'''
+    ''' 
+        Util function to interpret all childrens and merge them
+        into one string
+    '''
     return reduce(lambda a,b: a+b, [c.interpret() for c in elements])
 
 def interpretChildren(node: ast.Node):
@@ -47,7 +49,7 @@ def interpret(self):
 
 @addToClass(ast.BlocNode)
 def interpret(self):
-    ''' Bloc node is excepted to output something like <tag>content</tag> '''
+    ''' Bloc node is excepted to output something like <tag [attributs]>content</tag> '''
     global countLines # is used to track tabulation for formatting
     output = "\t"*countLines + f"<{self.tag}"
     if self.info:
@@ -107,32 +109,33 @@ def interpret(self):
 
 @addToClass(ast.JnxVarNode)
 def interpret(self):
-    ''' VarNode are variables, it could represent a single value
+    ''' 
+        VarNode are variables, it could represent a single value
         or a list of values. It should have jnx:value inside of it.
     '''
-    global currentVar
+    global stackVars
     name = self.name
 
     if self.name in vars:
         warning_message(f"var '{self.name}' already set, this may cause unwanted behaviors, you should considering changing variable's name")
 
     vars[name] = [] # we create a new variable in our dictionnary
-    currentVar = name # we set the current var, so the jnx:value can retrieve it.
+    stackVars.append(name) # we add current var, so the jnx:value can retrieve it.
     output = ""
 
     output += interpretChildren(self)
 
-    currentVar = None
+    stackVars.pop()
 
     return output
 
 @addToClass(ast.JnxValueNode)
 def interpret(self):
     ''' JnxValue is a value to put on a var node '''
-    global currentVar
-    if not currentVar:
+    global stackVars
+    if not len(stackVars):
         error_message(f"value '{self.value}' is not surrounded by a variable")
-    vars[currentVar].append(self.value)
+    vars[stackVars[-1]].append(self.value)
     return ""
 
 @addToClass(ast.JnxForeachNode)

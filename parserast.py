@@ -1,7 +1,7 @@
 ''' 
     Ce module permet de parser les fichiers de type JNX
 
-    Il permet aussi de frabriquer ("coudre") un arbre pour avoir
+    Il permet aussi de fabriquer un arbre syntaxique pour avoir
     une représentation de notre arbre syntaxique
 
     JNX-Interpreter
@@ -51,15 +51,20 @@ def JnxFor(p):
     attribs = p[1][1]
     start = getValFromAttributeName(attribs, "from")
     to = getValFromAttributeName(attribs, "to")
-    step = int(getValFromAttributeName(attribs, "step", "1"))
+    step = getValFromAttributeName(attribs, "step", "1")
     itName = getValFromAttributeName(attribs, "name", "it")
-
     if start is None or to is None:
         error_message(p,"jnx:for is missing either 'from' or 'to' parameter !")
 
-    start = int(start); to = int(to) #convert to int as we receive str parameter
+    try:
+        start = int(start); to = int(to); step = int(step) #convert to int as we receive str parameter
+    except ValueError:
+        error_message(p, "jnx:for parameter from, to or step should be integers !")
 
-    # semantic verification 
+    if step == 0:
+        error_message(p, "jnx:for steps cannot be zero !")
+
+    # semantic verification, is loop correct ? 
     sem = ((to - start)/step)
     if sem < 0:
         error_message(p, f"For loop with values start={start}, to={to} and step={step} may endup in an infinite loop !")
